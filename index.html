@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar Quest: 20 Days</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ef; --panel:#ffffff; --ink:#1f2433; --muted:#636a7d; --line:#e4e0d6;
+  --brand:#2f5bea; --brand-soft:#e8eeff; --accent:#ff8a3d; --accent-soft:#fff1e6;
+  --ok:#17915a; --ok-soft:#e3f6ec; --bad:#d23c3c; --bad-soft:#fdeaea;
+  --tip:#7a4fd6; --tip-soft:#f1ebff; --warn:#b7791f; --warn-soft:#fff6dd;
+  --shadow:0 1px 2px rgba(20,24,40,.06),0 6px 24px rgba(20,24,40,.06);
+  --radius:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14161d; --panel:#1d2029; --ink:#eceef4; --muted:#a2a8b8; --line:#2e3240;
+    --brand:#7c9bff; --brand-soft:#232b47; --accent:#ffa366; --accent-soft:#3a2a1e;
+    --ok:#4cd391; --ok-soft:#183427; --bad:#ff7a7a; --bad-soft:#3a1d1f;
+    --tip:#b89bff; --tip-soft:#2a2340; --warn:#f0c060; --warn-soft:#352c17;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14161d; --panel:#1d2029; --ink:#eceef4; --muted:#a2a8b8; --line:#2e3240;
+  --brand:#7c9bff; --brand-soft:#232b47; --accent:#ffa366; --accent-soft:#3a2a1e;
+  --ok:#4cd391; --ok-soft:#183427; --bad:#ff7a7a; --bad-soft:#3a1d1f;
+  --tip:#b89bff; --tip-soft:#2a2340; --warn:#f0c060; --warn-soft:#352c17;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Lexend,system-ui,sans-serif;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.2;margin:0 0 .5em}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800}
+h2{font-size:clamp(22px,3.4vw,30px)}
+h3{font-size:20px;margin-top:1.4em}
+a{color:var(--brand)}
+button{font-family:inherit;font-size:15px;cursor:pointer}
+.app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+/* Sidebar */
+.side{background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 8px 16px;text-decoration:none;color:var(--ink)}
+.logo .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--accent));display:grid;place-items:center;color:#fff;font-family:Fraunces,serif;font-weight:800;font-size:20px}
+.logo b{font-family:Fraunces,serif;font-size:19px;display:block;line-height:1.1}
+.logo small{color:var(--muted);font-size:12px}
+.navhome{display:flex;gap:8px;margin:0 4px 14px}
+.navhome a{flex:1;text-align:center;padding:8px;border-radius:10px;background:var(--brand-soft);color:var(--brand);text-decoration:none;font-size:14px;font-weight:500}
+.daylist{list-style:none;margin:0;padding:0}
+.daylist a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;color:var(--ink);text-decoration:none;font-size:14.5px}
+.daylist a:hover{background:var(--bg)}
+.daylist a.active{background:var(--brand);color:#fff}
+.daylist .num{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--bg);font-weight:600;font-size:13px;flex-shrink:0}
+.daylist a.active .num{background:rgba(255,255,255,.22)}
+.daylist .st{margin-left:auto;font-size:13px}
+.weekhdr{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:14px 10px 4px;font-weight:600}
+/* Main */
+.main{padding:28px clamp(16px,4vw,48px) 80px;max-width:980px;width:100%}
+.topbar{display:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(18px,3vw,30px);box-shadow:var(--shadow);margin-bottom:20px}
+.hero{background:linear-gradient(135deg,var(--brand) 0%,#5b3fd6 60%,var(--accent) 140%);color:#fff;border:none}
+.hero p{opacity:.92;max-width:640px}
+.hero h1{color:#fff}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:12.5px;font-weight:600}
+.hero .pill{background:rgba(255,255,255,.2);color:#fff}
+.btn{border:none;border-radius:11px;padding:10px 18px;background:var(--brand);color:#fff;font-weight:500;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.btn.orange{background:var(--accent)}
+.btn.small{padding:6px 12px;font-size:13.5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.dcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;text-decoration:none;color:var(--ink);display:block;transition:transform .12s, box-shadow .12s}
+.dcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.dcard .n{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.dcard .t{font-weight:600;margin:2px 0 8px;line-height:1.3}
+.bar{height:6px;background:var(--bg);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:9px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--muted)}
+.chip.on{background:var(--ok-soft);color:var(--ok)}
+input[type=text]{font-family:inherit;font-size:16px;padding:10px 14px;border-radius:11px;border:1px solid var(--line);background:var(--panel);color:var(--ink);min-width:0}
+/* Day header + tabs */
+.dayhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.dayhead .sub{color:var(--muted);margin:-4px 0 0}
+.tabs{display:flex;gap:6px;background:var(--panel);border:1px solid var(--line);padding:6px;border-radius:14px;margin-bottom:18px;overflow-x:auto;position:sticky;top:8px;z-index:5;box-shadow:var(--shadow)}
+.tabs button{flex:1;border:none;background:none;padding:10px 12px;border-radius:10px;color:var(--muted);font-weight:500;white-space:nowrap}
+.tabs button.on{background:var(--brand);color:#fff}
+.tabs button .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-left:6px;vertical-align:middle}
+/* Lesson blocks */
+.lesson p{margin:.6em 0}
+.rule{border-left:5px solid var(--brand);background:var(--brand-soft);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+.tip{border-left:5px solid var(--tip);background:var(--tip-soft);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+.warn{border-left:5px solid var(--warn);background:var(--warn-soft);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+.ex{background:var(--bg);border-radius:12px;padding:10px 14px;margin:10px 0}
+.ex div{padding:3px 0}
+.y{color:var(--ok);font-weight:700;margin-right:6px}
+.n{color:var(--bad);font-weight:700;margin-right:6px}
+mark{background:var(--accent-soft);color:var(--ink);padding:0 4px;border-radius:5px;font-weight:600}
+.lesson table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15.5px}
+.lesson th,.lesson td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.lesson th{background:var(--bg)}
+.tablewrap{overflow-x:auto}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+/* Quiz */
+.q{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;background:var(--panel)}
+.q .qt{font-weight:500;margin-bottom:10px}
+.q .qn{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--brand-soft);color:var(--brand);font-size:13px;font-weight:700;margin-right:8px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:2px solid var(--line);background:var(--panel);color:var(--ink);padding:10px 14px;border-radius:11px;font-size:16px;line-height:1.4}
+.opt:hover:not(:disabled){border-color:var(--brand)}
+.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+.why{margin-top:10px;padding:10px 14px;border-radius:10px;font-size:15px}
+.why.good{background:var(--ok-soft)} .why.badx{background:var(--bad-soft)}
+.score{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:14px;margin:14px 0;background:var(--brand-soft)}
+.score b{font-family:Fraunces,serif;font-size:34px;color:var(--brand)}
+/* Fix-it */
+.fx{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.wrongs{font-size:17px;background:var(--bad-soft);padding:8px 12px;border-radius:10px;margin:6px 0 10px;font-family:Lexend}
+textarea{width:100%;font-family:inherit;font-size:16.5px;line-height:1.6;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--brand);outline-offset:1px}
+.res{margin-top:10px;padding:10px 14px;border-radius:10px;font-size:15px}
+.res.good{background:var(--ok-soft)} .res.badx{background:var(--warn-soft)}
+/* Writing */
+.prompt{background:var(--accent-soft);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.wc{font-size:14px;color:var(--muted)}
+.checks label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.checks input{width:20px;height:20px;margin-top:3px;accent-color:var(--ok);flex-shrink:0}
+.coach{margin-top:12px}
+.coach li{margin:4px 0}
+.passage{background:var(--bg);border-radius:12px;padding:12px 16px;font-style:italic;margin:10px 0}
+.navbottom{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.muted{color:var(--muted)}
+table.report{width:100%;border-collapse:collapse;font-size:14.5px}
+table.report th,table.report td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
+.hide{display:none!important}
+.themebtn{position:fixed;right:16px;bottom:16px;z-index:20;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);box-shadow:var(--shadow);font-size:18px}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:fixed;inset:0 auto 0 0;width:290px;z-index:30;transform:translateX(-100%);transition:transform .2s;box-shadow:var(--shadow)}
+  .side.open{transform:none}
+  .topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+  .topbar b{font-family:Fraunces,serif}
+  .tabs{top:58px}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:25}
+}
+@media print{
+  .side,.topbar,.tabs,.themebtn,.btn,.noprint{display:none!important}
+  .app{display:block} body{background:#fff;color:#000}
+  .card{box-shadow:none;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+<div class="topbar"><button class="btn ghost small" id="menuBtn" aria-label="Open menu">☰ Days</button><b>Grammar Quest</b></div>
+<div class="app">
+  <aside class="side" id="side">
+    <a class="logo" href="#home"><span class="mark">G</span><span><b>Grammar Quest</b><small>20 days to stronger writing</small></span></a>
+    <div class="navhome"><a href="#home">🏠 Home</a><a href="#report">📊 Report</a></div>
+    <ul class="daylist" id="daylist"></ul>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+<div id="scrim"></div>
+<button class="themebtn" id="themeBtn" title="Switch light/dark">◐</button>
+
+<script>
+/* ============================================================
+   COURSE CONTENT
+   quiz: [question, [options], correctIndex, explanation]
+   fix:  [sentence with mistakes, [accepted answers], tip]
+   ============================================================ */
+const DAYS = [
+/* ---------------- DAY 1 ---------------- */
+{t:`Nouns: The Naming Words`, s:`What is a noun? Common, proper, concrete, abstract and collective nouns`,
+lesson:`
+<h3>What is a noun?</h3>
+<p>A <mark>noun</mark> is a word that <b>names</b> something. Every noun names one of four things:</p>
+<div class="cols">
+<div class="ex"><b>👤 A person</b><div>teacher, mom, Sam, doctor</div></div>
+<div class="ex"><b>📍 A place</b><div>school, park, Boston, kitchen</div></div>
+<div class="ex"><b>📦 A thing</b><div>pencil, dog, car, pizza</div></div>
+<div class="ex"><b>💭 An idea</b><div>love, fear, courage, freedom</div></div>
+</div>
+<div class="tip">💡 <b>The "the" test:</b> If you can put <i>the</i>, <i>a</i>, or <i>an</i> in front of a word and it makes sense, it is probably a noun. <i>the teacher</i> ✔, <i>a dog</i> ✔, <i>the quickly</i> ✘.</div>
+
+<h3>1. Common nouns and proper nouns</h3>
+<div class="rule"><b>Common noun</b> = a general name (starts with a small letter): <i>city, boy, day, school</i><br>
+<b>Proper noun</b> = the special name of ONE particular person, place or thing. It ALWAYS starts with a <b>capital letter</b>: <i>Boston, Arjun, Monday, Lincoln Middle School</i></div>
+<div class="tablewrap"><table><tr><th>Common noun</th><th>Proper noun</th></tr>
+<tr><td>city</td><td>New York</td></tr><tr><td>day</td><td>Saturday</td></tr><tr><td>month</td><td>October</td></tr><tr><td>teacher</td><td>Mrs. Garcia</td></tr><tr><td>holiday</td><td>Diwali, Thanksgiving</td></tr><tr><td>river</td><td>Mississippi River</td></tr></table></div>
+
+<h3>2. Concrete nouns and abstract nouns</h3>
+<div class="rule"><b>Concrete noun</b> = something you can see, hear, touch, smell or taste: <i>apple, music, rock, rain</i><br>
+<b>Abstract noun</b> = an idea, feeling or quality you can NOT touch: <i>happiness, honesty, courage, friendship, fear</i></div>
+
+<h3>3. Collective nouns</h3>
+<div class="rule">A <b>collective noun</b> names a <b>group</b> as one unit: <i>team, class, family, flock (of birds), herd (of cows), pack (of wolves), swarm (of bees)</i></div>
+
+<h3>Let's find the nouns</h3>
+<div class="ex"><div>The <mark>girl</mark> put her <mark>book</mark> on the <mark>desk</mark>. → 3 nouns</div>
+<div><mark>Priya</mark> showed great <mark>courage</mark> at the <mark>competition</mark>. → 3 nouns (one proper, one abstract, one common)</div></div>
+<div class="warn">⚠️ <b>Common mistake:</b> forgetting capital letters on proper nouns. <span class="n">✘</span> my friend sam lives in texas. <span class="y">✔</span> My friend Sam lives in Texas.</div>`,
+quiz:[
+[`Which word is a noun?`,[`run`,`happy`,`teacher`,`quickly`],2,`A teacher is a person, so "teacher" is a noun.`],
+[`Find the proper noun: "We visited Boston last summer."`,[`visited`,`Boston`,`summer`,`We`],1,`Boston is the name of one specific city, so it is a proper noun with a capital letter.`],
+[`Which is an abstract noun (an idea or feeling you cannot touch)?`,[`table`,`river`,`courage`,`dog`],2,`You cannot touch courage. It is a quality, so it is abstract.`],
+[`Which is a collective noun (a name for a group)?`,[`flock`,`bird`,`feather`,`nest`],0,`A flock is a group of birds.`],
+[`How many nouns are in this sentence? "The girl put her book on the desk."`,[`1`,`2`,`3`,`4`],2,`girl, book, desk = 3 nouns.`],
+[`Which word should ALWAYS start with a capital letter?`,[`city`,`teacher`,`school`,`monday`],3,`Days of the week are proper nouns: Monday.`],
+[`In "Honesty is important," the word "Honesty" is a(n)...`,[`proper noun`,`abstract noun`,`collective noun`,`verb`],1,`Honesty is a quality you cannot touch, so it is an abstract noun.`],
+[`Which word is NOT a noun?`,[`freedom`,`Atlanta`,`quietly`,`pencil`],2,`"Quietly" describes HOW something is done. It is an adverb, not a naming word.`]
+],
+fix:[
+[`my friend sam lives in new york.`,[`My friend Sam lives in New York.`],`Capitalize the first word, the person's name, and the city.`],
+[`we saw the statue of liberty on saturday.`,[`We saw the Statue of Liberty on Saturday.`],`The name of a famous place and a day of the week are proper nouns. ("of" stays small.)`],
+[`on tuesday, mrs. lee read us a book.`,[`On Tuesday, Mrs. Lee read us a book.`],`First word, day of the week, and a person's title + name all need capitals.`]
+],
+write:{p:`Describe your favorite place (your room, a park, a restaurant, a city you visited) in <b>5 to 7 sentences</b>. Use at least <b>3 proper nouns</b> and <b>2 abstract nouns</b> (like <i>joy, peace, excitement</i>). At the end, write a list: "My proper nouns: ... My abstract nouns: ..."`,
+list:[`I wrote 5 to 7 complete sentences.`,`I used at least 3 proper nouns, and each one has a capital letter.`,`I used at least 2 abstract nouns.`,`I listed my nouns at the end.`,`Every sentence starts with a capital letter and ends with . ! or ?`],min:60}
+},
+/* ---------------- DAY 2 ---------------- */
+{t:`Plural & Possessive Nouns`, s:`More than one, and showing who owns something`,
+lesson:`
+<h3>Singular and plural</h3>
+<p><b>Singular</b> means one (<i>cat</i>). <b>Plural</b> means more than one (<i>cats</i>). English has a few rules for making plurals:</p>
+<div class="tablewrap"><table>
+<tr><th>Rule</th><th>Examples</th></tr>
+<tr><td>Most nouns: add <b>-s</b></td><td>book → books, dog → dogs</td></tr>
+<tr><td>Ends in <b>s, x, z, ch, sh</b>: add <b>-es</b></td><td>bus → buses, box → boxes, lunch → lunches, wish → wishes</td></tr>
+<tr><td>Consonant + <b>y</b>: change y to <b>i</b>, add <b>-es</b></td><td>baby → babies, city → cities, puppy → puppies</td></tr>
+<tr><td>Vowel (a, e, i, o, u) + <b>y</b>: just add <b>-s</b></td><td>boy → boys, key → keys, monkey → monkeys</td></tr>
+<tr><td>Many words ending in <b>f / fe</b>: change to <b>-ves</b></td><td>leaf → leaves, knife → knives, wolf → wolves</td></tr>
+<tr><td><b>Irregular</b> (must memorize)</td><td>child → children, man → men, woman → women, mouse → mice, tooth → teeth, foot → feet, person → people</td></tr>
+<tr><td><b>Same</b> in singular and plural</td><td>sheep, deer, fish, moose</td></tr>
+</table></div>
+
+<h3>Possessive nouns (showing ownership)</h3>
+<p>A <mark>possessive noun</mark> shows that something <b>belongs</b> to someone. We use an <b>apostrophe ( ' )</b>.</p>
+<div class="rule"><b>Rule 1 — One owner:</b> add <b>'s</b> → the dog<b>'s</b> bone (one dog), Sam<b>'s</b> bike, the teacher<b>'s</b> desk<br>
+<b>Rule 2 — Many owners, plural already ends in s:</b> add only <b>'</b> → the dog<b>s'</b> bones (many dogs), the student<b>s'</b> lockers<br>
+<b>Rule 3 — Plural that does NOT end in s:</b> add <b>'s</b> → the children<b>'s</b> toys, the men<b>'s</b> team</div>
+<div class="tip">💡 <b>Trick:</b> First write the owner (one or many). Then ask: does it end in <b>s</b>? If it is plural and ends in s, just add <b>'</b>. Otherwise add <b>'s</b>.</div>
+<div class="warn">⚠️ <b>The #1 mistake:</b> Never use an apostrophe just to make a word plural!<br><span class="n">✘</span> I bought three apple's. <span class="y">✔</span> I bought three apples.</div>`,
+quiz:[
+[`Plural of "box"?`,[`boxs`,`boxes`,`boxies`,`box's`],1,`Words ending in x add -es.`],
+[`Plural of "baby"?`,[`babys`,`babyes`,`babies`,`baby's`],2,`Consonant + y: change y to i and add -es.`],
+[`Plural of "leaf"?`,[`leafs`,`leaves`,`leafes`,`leave`],1,`leaf → leaves (f changes to ves).`],
+[`Plural of "child"?`,[`childs`,`childes`,`childrens`,`children`],3,`Child is irregular: children. ("childrens" is never correct.)`],
+[`Plural of "monkey"?`,[`monkies`,`monkeys`,`monkeyes`,`monkey's`],1,`Vowel (e) + y: just add -s.`],
+[`The bone belongs to ONE dog. Which is correct?`,[`the dogs bone`,`the dog's bone`,`the dogs' bone`,`the dogs's bone`],1,`One owner → add 's.`],
+[`The lockers belong to MANY students. Which is correct?`,[`the student's lockers`,`the students lockers`,`the students' lockers`,`the students's lockers`],2,`Plural ending in s → add only an apostrophe.`],
+[`Which sentence is correct?`,[`I bought three apple's.`,`I bought three apples.`,`I bought three apples'.`,`I bought three applies.`],1,`Plurals do not need apostrophes.`]
+],
+fix:[
+[`The boys bikes were in the garage. (many boys)`,[`The boys' bikes were in the garage.`],`Many boys own the bikes. Plural ends in s, so add only '. (Don't type the hint in brackets.)`],
+[`I have two puppys and three kitten's.`,[`I have two puppies and three kittens.`],`puppy → puppies (consonant + y). Plurals have no apostrophe.`],
+[`The childrens' coats are wet.`,[`The children's coats are wet.`],`"Children" is already plural and does not end in s, so add 's.`]
+],
+write:{p:`Write <b>6 to 8 sentences</b> about the things your family members or classmates own (for example: <i>my brother's soccer cleats</i>, <i>my parents' car</i>). Use at least <b>3 plural nouns</b> (one with -es or -ies, one irregular) and at least <b>3 possessive nouns</b> (one singular, one plural).`,
+list:[`I used at least 3 plural nouns, spelled correctly.`,`I used at least 3 possessive nouns with apostrophes in the right place.`,`I did NOT put apostrophes on plain plurals.`,`Each sentence is complete and ends with punctuation.`],min:70}
+},
+/* ---------------- DAY 3 ---------------- */
+{t:`Pronouns, Part 1`, s:`Words that replace nouns: subject and object pronouns`,
+lesson:`
+<h3>What is a pronoun?</h3>
+<p>A <mark>pronoun</mark> is a word that <b>takes the place of a noun</b>, so we don't repeat the same noun again and again.</p>
+<div class="ex"><div><span class="n">✘</span> Maya lost Maya's pencil, so Maya borrowed one.</div><div><span class="y">✔</span> Maya lost <mark>her</mark> pencil, so <mark>she</mark> borrowed one.</div></div>
+
+<h3>Subject pronouns vs. object pronouns</h3>
+<div class="tablewrap"><table>
+<tr><th>Subject pronouns<br><small>(DO the action — usually before the verb)</small></th><th>Object pronouns<br><small>(RECEIVE the action — after the verb or after words like to, for, with, between)</small></th></tr>
+<tr><td>I</td><td>me</td></tr><tr><td>you</td><td>you</td></tr><tr><td>he / she / it</td><td>him / her / it</td></tr><tr><td>we</td><td>us</td></tr><tr><td>they</td><td>them</td></tr>
+</table></div>
+<div class="ex"><div><mark>She</mark> called <mark>me</mark>. → "She" does the calling (subject); "me" receives it (object).</div><div><mark>They</mark> gave the gift to <mark>us</mark>.</div></div>
+
+<h3>The "cover-up" trick for two people</h3>
+<p>Mistakes happen most when there are TWO people. Cover up the other person and listen:</p>
+<div class="ex"><div>Jake and (I / me) went to the park. → Cover "Jake and": <i>me went</i>? ✘ <i>I went</i>? ✔ → <b>Jake and I went to the park.</b></div>
+<div>Mom drove Jake and (I / me). → Cover "Jake and": <i>Mom drove I</i>? ✘ <i>Mom drove me</i>? ✔ → <b>Mom drove Jake and me.</b></div></div>
+<div class="rule"><b>Politeness rule:</b> Always put yourself <b>last</b>. Say "My sister and I," not "I and my sister" or "Me and my sister."</div>
+<div class="warn">⚠️ After <b>between, to, for, with</b> use object pronouns: "between you and <b>me</b>" (not "between you and I").</div>
+<div class="tip">💡 "<b>We</b> students" or "<b>us</b> students"? Cover "students": <i>We are tired</i> ✔ → "We students are tired." <i>The teacher helped us</i> ✔ → "The teacher helped us students."</div>`,
+quiz:[
+[`Which pronoun can replace "Sara" in "Sara likes pizza"?`,[`Her`,`She`,`Hers`,`Herself`],1,`Sara is the subject (she does the liking), so use the subject pronoun "She."`],
+[`"Please give the ball to ___." (Tom)`,[`he`,`him`,`his`,`himself`],1,`After "to," use the object pronoun "him."`],
+[`"Jake and ___ played chess."`,[`me`,`I`,`myself`,`mine`],1,`Cover "Jake and": "I played chess." ✔`],
+[`"The teacher called Mia and ___ to the front."`,[`I`,`me`,`myself`,`mine`],1,`Cover "Mia and": "The teacher called me." ✔`],
+[`"This secret is between you and ___."`,[`I`,`me`,`myself`,`mine`],1,`After "between," use an object pronoun: me.`],
+[`Which one is a SUBJECT pronoun?`,[`them`,`us`,`they`,`him`],2,`"They" is a subject pronoun. The others are object pronouns.`],
+[`"___ students want a longer recess."`,[`Us`,`We`,`Our's`,`Ourselves`],1,`Cover "students": "We want..." ✔`],
+[`Which sentence is polite AND correct?`,[`Me and my mom baked a cake.`,`I and my mom baked a cake.`,`My mom and I baked a cake.`,`My mom and me baked a cake.`],2,`Subject pronoun "I," and put yourself last.`]
+],
+fix:[
+[`Me and Jake went to the park.`,[`Jake and I went to the park.`],`Use "I" as a subject, and put yourself last.`],
+[`The coach gave the trophy to Lily and I.`,[`The coach gave the trophy to Lily and me.`],`After "to," use the object pronoun "me."`],
+[`Her and me are best friends.`,[`She and I are best friends.`],`Both people are subjects: "She and I."`]
+],
+write:{p:`Write <b>6 to 8 sentences</b> about something fun you did with a friend or sibling. Use "<b>___ and I</b>" as a subject at least <b>twice</b> and "<b>___ and me</b>" as an object at least <b>twice</b> (for example: <i>Dad took Aarav and me to the game</i>). Use the cover-up trick to check each one.`,
+list:[`I used "___ and I" correctly at least twice.`,`I used "___ and me" correctly at least twice.`,`I put myself last every time.`,`I used pronouns so I didn't repeat names too much.`,`Every sentence starts with a capital and ends with punctuation.`],min:70}
+},
+/* ---------------- DAY 4 ---------------- */
+{t:`Pronouns, Part 2`, s:`Possessive and reflexive pronouns, and pronoun agreement`,
+lesson:`
+<h3>Possessive pronouns (ownership — with NO apostrophe!)</h3>
+<div class="tablewrap"><table>
+<tr><th>Before a noun</th><th>Stands alone</th></tr>
+<tr><td>my book</td><td>The book is <b>mine</b>.</td></tr>
+<tr><td>your coat</td><td>The coat is <b>yours</b>.</td></tr>
+<tr><td>his bike / her bike</td><td>It is <b>his</b>. / It is <b>hers</b>.</td></tr>
+<tr><td>its tail</td><td>—</td></tr>
+<tr><td>our house</td><td>The house is <b>ours</b>.</td></tr>
+<tr><td>their dog</td><td>The dog is <b>theirs</b>.</td></tr>
+</table></div>
+<div class="warn">⚠️ Possessive pronouns NEVER use apostrophes: <span class="n">✘</span> your's, her's, our's, their's, it's tail. <span class="y">✔</span> yours, hers, ours, theirs, its tail.<br><b>it's</b> only means "it is" or "it has."</div>
+
+<h3>Reflexive pronouns (-self / -selves)</h3>
+<p>Use them when the subject does something <b>to itself</b>, or for <b>emphasis</b>.</p>
+<div class="ex"><div>I taught <mark>myself</mark> to ride a bike. · She made it <mark>herself</mark>. · They cleaned up <mark>themselves</mark>.</div></div>
+<div class="rule">myself · yourself · himself · herself · itself · ourselves · yourselves · themselves</div>
+<div class="warn">⚠️ <b>"hisself," "theirselves," and "theirself" are NOT words.</b> Also, don't use "myself" as a subject: <span class="n">✘</span> Myself and Tom will go. <span class="y">✔</span> Tom and I will go.</div>
+
+<h3>Antecedents: who is the pronoun talking about?</h3>
+<p>The <mark>antecedent</mark> is the noun a pronoun replaces. They must <b>match</b> (one/many, he/she/it).</p>
+<div class="ex"><div>The <b>tree</b> lost <mark>its</mark> leaves. (tree = one thing → its)</div><div>The <b>students</b> finished <mark>their</mark> projects. (students = many → their)</div></div>
+<div class="tip">💡 <b>Be clear!</b> "When Max met Leo, <i>he</i> smiled." Who smiled? We can't tell. Better: "Max smiled when he met Leo."</div>`,
+quiz:[
+[`"That book is ___." (it belongs to me)`,[`my`,`mine`,`mine's`,`me`],1,`"Mine" stands alone without a noun after it.`],
+[`"The dog wagged ___ tail."`,[`it's`,`its'`,`its`,`it`],2,`Possessive "its" has no apostrophe. "It's" means "it is."`],
+[`Which sentence is correct?`,[`He built the fort by hisself.`,`He built the fort by himself.`,`He built the fort by his self.`,`He built the fort by him.`],1,`"Hisself" is not a word. Use "himself."`],
+[`Which is NOT a real word?`,[`themselves`,`ourselves`,`theirselves`,`yourselves`],2,`"Theirselves" is incorrect. Use "themselves."`],
+[`Which sentence is correct?`,[`Myself and Tom will lead the group.`,`Tom and myself will lead the group.`,`Tom and I will lead the group.`,`Tom and me will lead the group.`],2,`Use the subject pronoun "I." Don't use "myself" as a subject.`],
+[`"The students finished ___ projects."`,[`there`,`their`,`they're`,`theirs`],1,`"Their" shows ownership before a noun.`],
+[`In "The tree lost its leaves," what is the antecedent of "its"?`,[`leaves`,`lost`,`tree`,`The`],2,`"Its" refers back to the tree.`],
+[`Which sentence is UNCLEAR (we can't tell who the pronoun means)?`,[`When Max met Leo, he smiled.`,`Max smiled when he met Leo.`,`When Max met Leo, Max smiled.`,`Leo smiled at Max.`],0,`"He" could be Max or Leo, so the sentence is unclear.`]
+],
+fix:[
+[`The cat licked it's paw.`,[`The cat licked its paw.`],`Possessive "its" has no apostrophe.`],
+[`Is this pencil your's?`,[`Is this pencil yours?`],`Possessive pronouns never use apostrophes.`],
+[`They did the whole project theirselves.`,[`They did the whole project themselves.`],`"Theirselves" is not a word.`]
+],
+write:{p:`Write <b>6 to 8 sentences</b> about a time you did something all by yourself for the first time (cooking, a project, a trip). Use at least <b>3 possessive pronouns</b> (my, his, mine, theirs...) and at least <b>2 reflexive pronouns</b> (myself, himself, ourselves...). Make sure every pronoun clearly matches its noun.`,
+list:[`I used at least 3 possessive pronouns with NO apostrophes.`,`I used at least 2 reflexive pronouns correctly.`,`Each pronoun clearly refers to one person or thing.`,`I did not write "hisself" or "theirselves."`,`My sentences are complete with correct punctuation.`],min:70}
+},
+/* ---------------- DAY 5 ---------------- */
+{t:`Verbs: Action, Linking & Helping`, s:`The engine of every sentence`,
+lesson:`
+<h3>What is a verb?</h3>
+<p>A <mark>verb</mark> tells what the subject <b>does</b> or what the subject <b>is</b>. Every sentence must have a verb.</p>
+<h3>1. Action verbs</h3>
+<div class="rule">Show an action — something you can do: <i>run, jump, write, think, eat, laugh, build, wonder</i>.<br>The frog <mark>jumped</mark> into the pond.</div>
+<h3>2. Linking verbs</h3>
+<div class="rule">Do NOT show action. They <b>link</b> the subject to a word that describes or renames it.<br>Forms of <b>be</b>: am, is, are, was, were, be, being, been<br>Sense & state verbs: seem, become, feel, look, smell, taste, sound, appear</div>
+<div class="ex"><div>The soup <mark>smells</mark> delicious. (soup = delicious)</div><div>She <mark>is</mark> a great singer. (She = singer)</div></div>
+<div class="tip">💡 <b>Test:</b> Replace the verb with "is" or "=". If it still makes sense, it is linking. "I <i>feel</i> tired" → "I am tired" ✔ (linking). "I <i>feel</i> the soft fur" → "I am the soft fur" ✘ (action).</div>
+<h3>3. Helping verbs</h3>
+<div class="rule">Come <b>before</b> the main verb to help it: am, is, are, was, were, has, have, had, do, does, did, can, could, will, would, shall, should, may, might, must.<br>Together they make a <b>verb phrase</b>: She <mark>has finished</mark>. They <mark>will be singing</mark>. (main verb = singing)</div>
+<div class="warn">⚠️ <b>"should of" is wrong!</b> It sounds like "should've" but it is <b>should have</b>. Same for could have, would have, must have.</div>
+<h3>Strong verbs make strong writing</h3>
+<div class="ex"><div><span class="n">Weak:</span> The horse <i>went</i> across the field.</div><div><span class="y">Strong:</span> The horse <i>galloped</i> across the field.</div></div>
+<p>Try to replace boring verbs like <i>went, got, did, said, made</i> with exact ones: <i>raced, grabbed, whispered, built, shouted</i>.</p>`,
+quiz:[
+[`Find the action verb: "The frog jumped into the pond."`,[`frog`,`jumped`,`into`,`pond`],1,`"Jumped" is the action.`],
+[`Find the linking verb: "The soup smells delicious."`,[`soup`,`smells`,`delicious`,`The`],1,`"Smells" links soup to delicious (soup is delicious).`],
+[`Find the helping verb: "She has finished her homework."`,[`She`,`has`,`finished`,`homework`],1,`"Has" helps the main verb "finished."`],
+[`In "They will be singing tonight," what is the MAIN verb?`,[`will`,`be`,`singing`,`tonight`],2,`"Will" and "be" are helpers. "Singing" is the main action.`],
+[`Which sentence uses "feel" as a LINKING verb?`,[`I feel tired today.`,`Feel the soft fur.`,`She felt the wall in the dark.`,`He feels the rain on his face.`],0,`"I am tired" still makes sense, so "feel" is linking.`],
+[`Which word is a helping verb?`,[`quickly`,`could`,`under`,`happy`],1,`"Could" helps another verb: could win, could go.`],
+[`Which sentence has a verb phrase (helping verb + main verb)?`,[`The bird sang.`,`The bird is singing.`,`The bird on the branch.`,`A singing bird.`],1,`"is singing" = helping verb + main verb.`],
+[`Which is the strongest, most exact verb? "The horse ___ across the field."`,[`went`,`moved`,`galloped`,`got`],2,`"Galloped" paints a clear picture.`]
+],
+fix:[
+[`She be happy today.`,[`She is happy today.`],`With "she," the form of "be" in present tense is "is."`],
+[`I should of finished my homework.`,[`I should have finished my homework.`,`I should've finished my homework.`],`"Should of" is wrong. Use "should have."`],
+[`We could of won the game.`,[`We could have won the game.`,`We could've won the game.`],`Use "could have," not "could of."`]
+],
+write:{p:`Write an exciting action scene of <b>6 to 8 sentences</b> (a sports game, a race, a rescue, a chase). Use at least <b>8 strong action verbs</b>. Do NOT use the weak verbs <i>went, got, did,</i> or <i>moved</i>. Then underline (or list at the end) your 8 best verbs.`,
+list:[`I used at least 8 strong action verbs.`,`I avoided went, got, did, and moved.`,`I used at least one linking verb and one helping verb.`,`I did not write "should of / could of / would of."`,`I listed my strong verbs at the end.`],min:70}
+},
+/* ---------------- DAY 6 ---------------- */
+{t:`Verb Tenses: Past, Present, Future`, s:`Telling WHEN something happens, and staying consistent`,
+lesson:`
+<h3>What is tense?</h3>
+<p><mark>Tense</mark> tells <b>when</b> an action happens.</p>
+<div class="tablewrap"><table>
+<tr><th>Tense</th><th>When</th><th>Example</th></tr>
+<tr><td><b>Present</b></td><td>now / every day</td><td>I <b>walk</b>. She <b>walks</b>.</td></tr>
+<tr><td><b>Past</b></td><td>already happened</td><td>I <b>walked</b> yesterday.</td></tr>
+<tr><td><b>Future</b></td><td>will happen</td><td>I <b>will walk</b> tomorrow.</td></tr>
+</table></div>
+<h3>Spelling rules for past tense (-ed)</h3>
+<div class="tablewrap"><table>
+<tr><th>Rule</th><th>Example</th></tr>
+<tr><td>Most verbs: add -ed</td><td>play → played, jump → jumped</td></tr>
+<tr><td>Ends in -e: add -d</td><td>bake → baked, smile → smiled</td></tr>
+<tr><td>Consonant + y: change y to i, add -ed</td><td>carry → carried, try → tried</td></tr>
+<tr><td>Short word, one vowel + one consonant: double it</td><td>stop → stopped, plan → planned</td></tr>
+</table></div>
+<div class="rule"><b>Present tense with he / she / it:</b> add -s or -es. <i>He plays. She watches. It flies.</i></div>
+<h3>⭐ Stay in the same tense!</h3>
+<p>The biggest tense mistake in writing is <b>switching</b> tenses in the middle of a story.</p>
+<div class="ex"><div><span class="n">✘</span> Yesterday I <b>walk</b> to school and <b>saw</b> my friend.</div><div><span class="y">✔</span> Yesterday I <b>walked</b> to school and <b>saw</b> my friend.</div></div>
+<div class="tip">💡 <b>Time words are clues:</b> <i>yesterday, last week, ago</i> → past. <i>every day, usually, now</i> → present. <i>tomorrow, next year, soon</i> → future.</div>`,
+quiz:[
+[`Which sentence is in the PAST tense?`,[`I walk to school.`,`I walked to school.`,`I will walk to school.`,`I am walking to school.`],1,`"Walked" happened already.`],
+[`Which sentence is in the FUTURE tense?`,[`She cooks dinner.`,`She cooked dinner.`,`She will cook dinner.`,`She cooking dinner.`],2,`"Will cook" is future.`],
+[`Past tense of "carry"?`,[`carryed`,`carried`,`carryd`,`carred`],1,`Consonant + y → change y to i, add -ed.`],
+[`Past tense of "stop"?`,[`stoped`,`stopped`,`stopt`,`stops`],1,`Short word with one vowel + one consonant: double the p.`],
+[`"Tomorrow, we ___ the museum."`,[`visited`,`visit`,`will visit`,`visiting`],2,`"Tomorrow" signals future tense.`],
+[`Which sentence keeps the SAME tense?`,[`He opens the door and walked in.`,`He opened the door and walks in.`,`He opened the door and walked in.`,`He will open the door and walked in.`],2,`Both verbs are past tense.`],
+[`"Every morning, my dad ___ coffee."`,[`drink`,`drinks`,`drinked`,`drinking`],1,`Present tense with "he" (my dad) needs -s.`],
+[`Past tense of "try"?`,[`tryed`,`tried`,`trid`,`tryied`],1,`try → tried.`]
+],
+fix:[
+[`Yesterday I walk to school and see my friend.`,[`Yesterday I walked to school and saw my friend.`,`Yesterday, I walked to school and saw my friend.`],`"Yesterday" means both verbs must be past tense.`],
+[`Tomorrow we went to the zoo.`,[`Tomorrow we will go to the zoo.`,`Tomorrow, we will go to the zoo.`],`"Tomorrow" needs future tense.`],
+[`She planed a party and invites everyone.`,[`She planned a party and invited everyone.`],`Double the n in "planned," and keep both verbs in past tense.`]
+],
+write:{p:`Write <b>7 to 9 sentences</b> about what you did last weekend. Write the whole story in the <b>past tense</b>. Then add <b>2 sentences</b> at the end about what you <b>will</b> do next weekend (future tense).`,
+list:[`My story about last weekend is all in past tense.`,`I spelled -ed endings correctly (doubling letters, y → i).`,`My last 2 sentences use future tense (will ...).`,`I used time words like "first," "then," "after that."`,`I re-read to make sure I didn't switch tenses by accident.`],min:80}
+},
+/* ---------------- DAY 7 ---------------- */
+{t:`Irregular Verbs & More Tenses`, s:`went/gone, saw/seen, and progressive & perfect tenses`,
+lesson:`
+<h3>Irregular verbs</h3>
+<p>Most verbs add -ed in the past. <mark>Irregular verbs</mark> don't follow the rule — you have to memorize them. Each verb has 3 main forms:</p>
+<div class="tablewrap"><table>
+<tr><th>Present</th><th>Past (yesterday I...)</th><th>Past participle (I have...)</th></tr>
+<tr><td>go</td><td>went</td><td>gone</td></tr><tr><td>see</td><td>saw</td><td>seen</td></tr><tr><td>eat</td><td>ate</td><td>eaten</td></tr><tr><td>do</td><td>did</td><td>done</td></tr><tr><td>write</td><td>wrote</td><td>written</td></tr><tr><td>take</td><td>took</td><td>taken</td></tr><tr><td>bring</td><td>brought</td><td>brought</td></tr><tr><td>begin</td><td>began</td><td>begun</td></tr><tr><td>swim</td><td>swam</td><td>swum</td></tr><tr><td>run</td><td>ran</td><td>run</td></tr><tr><td>give</td><td>gave</td><td>given</td></tr><tr><td>know</td><td>knew</td><td>known</td></tr><tr><td>break</td><td>broke</td><td>broken</td></tr><tr><td>choose</td><td>chose</td><td>chosen</td></tr><tr><td>drink</td><td>drank</td><td>drunk</td></tr>
+</table></div>
+<div class="rule"><b>Key rule:</b> The <b>past participle</b> (3rd column) needs a helper: <b>has, have, or had</b>.<br><span class="y">✔</span> I <b>went</b>. I <b>have gone</b>. <span class="n">✘</span> I have went. <span class="n">✘</span> I gone.<br><span class="y">✔</span> I <b>saw</b> it. I <b>have seen</b> it. <span class="n">✘</span> I seen it.</div>
+<div class="warn">⚠️ "brung" and "bringed" are not words. Use <b>brought</b>.</div>
+<h3>Progressive tense (action in progress)</h3>
+<div class="rule">am / is / are / was / were + <b>-ing</b><br>I <b>am reading</b> (now). I <b>was reading</b> when the phone rang (past). I <b>will be reading</b> (future).</div>
+<h3>Perfect tense</h3>
+<div class="rule">has / have / had + <b>past participle</b><br>I <b>have finished</b> my homework (done before now).<br>By the time we arrived, the movie <b>had started</b> (done before another past event).</div>`,
+quiz:[
+[`Past tense of "go"?`,[`goed`,`gone`,`went`,`wented`],2,`go → went → (have) gone.`],
+[`"I have ___ that movie three times."`,[`saw`,`seen`,`seed`,`see`],1,`After "have," use the past participle: seen.`],
+[`"She ___ her lunch to school."`,[`brung`,`bringed`,`brought`,`brang`],2,`bring → brought.`],
+[`"We have ___ all the cookies!"`,[`ate`,`eaten`,`eated`,`eat`],1,`After "have," use "eaten."`],
+[`Which sentence shows an action IN PROGRESS?`,[`I read.`,`I have read.`,`I was reading.`,`I will read.`],2,`"Was reading" = progressive.`],
+[`"By the time we arrived, the movie ___."`,[`has started`,`had started`,`starts`,`starting`],1,`One past action happened before another, so use "had started."`],
+[`"He has ___ a letter to his grandma."`,[`wrote`,`writed`,`written`,`writ`],2,`After "has," use "written."`],
+[`Which sentence is correct?`,[`I seen him yesterday.`,`I have saw him.`,`I saw him yesterday.`,`I have seed him.`],2,`Simple past: "saw." ("seen" needs have/has.)`]
+],
+fix:[
+[`I have went there before.`,[`I have gone there before.`],`After "have," use "gone."`],
+[`She brung her lunch.`,[`She brought her lunch.`],`bring → brought.`],
+[`We seen that movie last week.`,[`We saw that movie last week.`],`Without "have," use the simple past: saw.`]
+],
+write:{p:`Write <b>8 sentences</b>: 4 sentences about things you <b>have done</b> and 4 about things you <b>have never done</b> but want to do. Use a different irregular verb in each sentence (for example: <i>I have swum in the ocean. I have never ridden a camel.</i>)`,
+list:[`Each sentence uses "have" + the correct past participle.`,`I used at least 6 different irregular verbs.`,`I did not write "have went," "seen" without have, or "brung."`,`My sentences are complete and punctuated.`],min:60}
+},
+/* ---------------- DAY 8 ---------------- */
+{t:`Subject–Verb Agreement`, s:`Making the subject and verb match`,
+lesson:`
+<h3>The main rule</h3>
+<div class="rule">A <b>singular</b> subject takes a <b>singular</b> verb. A <b>plural</b> subject takes a <b>plural</b> verb.<br>The dog <mark>barks</mark>. The dogs <mark>bark</mark>.</div>
+<div class="tip">💡 Strange but true: in the present tense, the <b>singular verb usually ends in -s</b> (he runs, she plays) while the <b>plural noun ends in -s</b> (dogs). Usually only ONE of them gets the s!</div>
+<h3>Tricky situations</h3>
+<div class="tablewrap"><table>
+<tr><th>Situation</th><th>Example</th></tr>
+<tr><td><b>Ignore the phrase in the middle.</b> Find the real subject.</td><td>The <b>box</b> of crayons <b>is</b> on the table. (not "are" — the box is)</td></tr>
+<tr><td><b>Two subjects joined by "and"</b> = plural</td><td>Ben and Maya <b>walk</b> to school.</td></tr>
+<tr><td><b>"or" / "nor"</b>: match the subject CLOSER to the verb</td><td>Either my mom or my <b>brothers are</b> coming. / Either my brothers or my <b>mom is</b> coming.</td></tr>
+<tr><td><b>each, every, everyone, everybody, someone, nobody</b> = singular</td><td>Everyone <b>is</b> here. Each of the boys <b>has</b> a ticket.</td></tr>
+<tr><td><b>There is / There are</b>: look at what comes AFTER</td><td>There <b>is</b> one cookie. There <b>are</b> three cookies.</td></tr>
+<tr><td><b>doesn't</b> with he/she/it; <b>don't</b> with I/you/we/they</td><td>He <b>doesn't</b> like spinach. They <b>don't</b> like it.</td></tr>
+<tr><td><b>Collective nouns</b> acting as one group = singular</td><td>The team <b>is</b> practicing.</td></tr>
+</table></div>
+<div class="warn">⚠️ "They was" and "we was" are always wrong. Use <b>were</b>: they were, we were, you were.</div>`,
+quiz:[
+[`"My sister ___ the piano."`,[`play`,`plays`,`playing`,`are playing`],1,`Singular subject (sister) → singular verb (plays).`],
+[`"The box of crayons ___ on the table."`,[`is`,`are`],0,`The subject is "box" (one), not "crayons."`],
+[`"Ben and Maya ___ to the park."`,[`walks`,`walk`],1,`Two subjects joined by "and" = plural.`],
+[`"Either my mom or my brothers ___ picking me up."`,[`is`,`are`],1,`With "or," match the closer subject: brothers (plural).`],
+[`"Everyone ___ excited about the trip."`,[`is`,`are`],0,`"Everyone" is singular.`],
+[`"There ___ three cookies left."`,[`is`,`are`],1,`Three cookies = plural.`],
+[`"He ___ like spinach."`,[`don't`,`doesn't`],1,`he/she/it → doesn't.`],
+[`"They ___ late for the bus."`,[`was`,`were`],1,`"They" always takes "were."`]
+],
+fix:[
+[`The box of crayons are on the table.`,[`The box of crayons is on the table.`],`The real subject is "box," which is singular.`],
+[`He don't like spinach.`,[`He doesn't like spinach.`,`He does not like spinach.`],`he → doesn't.`],
+[`There is three cookies left.`,[`There are three cookies left.`],`Three cookies is plural, so use "are."`]
+],
+write:{p:`Write <b>7 to 9 sentences</b> describing your family's busy morning routine, in the <b>present tense</b> (<i>My dad makes tea. My brother and I race to the bathroom...</i>). Include: one sentence with "and" joining two subjects, one with "everyone" or "each," and one starting with "There is" or "There are."`,
+list:[`Every subject matches its verb.`,`I included a compound subject with "and."`,`I used "everyone," "each," or "everybody" with a singular verb.`,`I used "There is" or "There are" correctly.`,`I stayed in the present tense.`],min:80}
+},
+/* ---------------- DAY 9 ---------------- */
+{t:`Adjectives & Articles`, s:`Describing words, a/an/the, and comparing`,
+lesson:`
+<h3>What is an adjective?</h3>
+<p>An <mark>adjective</mark> describes a <b>noun</b> or <b>pronoun</b>. It answers: <b>What kind? Which one? How many?</b></p>
+<div class="ex"><div>What kind? → a <mark>fluffy</mark> cat, a <mark>cold</mark> day</div><div>Which one? → <mark>that</mark> book, the <mark>last</mark> slice</div><div>How many? → <mark>three</mark> kids, <mark>several</mark> ideas</div></div>
+<p>Adjectives can come <b>before</b> a noun (<i>the tiny kitten</i>) or <b>after a linking verb</b> (<i>The kitten is tiny</i>).</p>
+<h3>Articles: a, an, the</h3>
+<div class="rule"><b>a</b> before a consonant <b>sound</b>: a dog, a <b>u</b>niversity (sounds like "you")<br><b>an</b> before a vowel <b>sound</b>: an apple, an <b>h</b>our (h is silent)<br><b>the</b> for something specific: <i>the</i> book on my desk</div>
+<div class="tip">💡 Listen to the SOUND, not the letter!</div>
+<h3>Comparing with adjectives</h3>
+<div class="tablewrap"><table>
+<tr><th></th><th>Comparative (2 things)</th><th>Superlative (3+ things)</th></tr>
+<tr><td>Short words: -er / -est</td><td>tall → taller</td><td>tallest</td></tr>
+<tr><td>Ending in y: change y to i</td><td>easy → easier</td><td>easiest</td></tr>
+<tr><td>Long words (3+ syllables): more / most</td><td>more exciting</td><td>most exciting</td></tr>
+<tr><td><b>Irregular</b></td><td>good → better · bad → worse · many → more</td><td>best · worst · most</td></tr>
+</table></div>
+<div class="warn">⚠️ Never use both! <span class="n">✘</span> more taller, most tallest, more smarter. <span class="y">✔</span> taller, tallest, smarter.</div>
+<h3>Show, don't tell</h3>
+<div class="ex"><div><span class="n">Plain:</span> It was a nice day.</div><div><span class="y">Vivid:</span> It was a warm, breezy, golden afternoon.</div></div>`,
+quiz:[
+[`Find the adjective: "The tiny kitten slept."`,[`The`,`tiny`,`kitten`,`slept`],1,`"Tiny" tells what kind of kitten.`],
+[`Which article fits? "I waited for ___ hour."`,[`a`,`an`],1,`"Hour" starts with a vowel SOUND (the h is silent).`],
+[`Which article fits? "She goes to ___ university in Boston."`,[`a`,`an`],0,`"University" starts with a "you" sound (consonant sound).`],
+[`"This test is ___ than the last one."`,[`easyer`,`more easy`,`easier`,`easiest`],2,`Comparing two things: easy → easier.`],
+[`"That was the ___ movie I have ever seen."`,[`more exciting`,`most exciting`,`excitingest`,`most excitingest`],1,`Long word, comparing many: most exciting.`],
+[`Comparative of "good"?`,[`gooder`,`more good`,`better`,`best`],2,`good → better → best.`],
+[`Superlative of "bad"?`,[`baddest`,`worse`,`worst`,`most bad`],2,`bad → worse → worst.`],
+[`Which adjective tells HOW MANY?`,[`blue`,`several`,`soft`,`brave`],1,`"Several" tells how many.`]
+],
+fix:[
+[`This is the most tallest building in town.`,[`This is the tallest building in town.`],`Don't use "most" with -est.`],
+[`She is more smarter than her brother.`,[`She is smarter than her brother.`],`Don't use "more" with -er.`],
+[`I ate a apple and a orange.`,[`I ate an apple and an orange.`],`Use "an" before vowel sounds.`]
+],
+write:{p:`Describe your favorite food OR animal in <b>6 to 8 sentences</b> so clearly that the reader can almost see, smell, or taste it. Use at least <b>8 vivid adjectives</b> (no "nice," "good," or "bad"), <b>one comparative</b> (-er / more), and <b>one superlative</b> (-est / most).`,
+list:[`I used at least 8 vivid adjectives.`,`I avoided nice, good, and bad.`,`I used one comparative and one superlative correctly.`,`I used a/an correctly.`,`I used my senses (sight, smell, taste, sound, touch).`],min:70}
+},
+/* ---------------- DAY 10 ---------------- */
+{t:`Adverbs`, s:`How, when, where; good vs. well; no double negatives`,
+lesson:`
+<h3>What is an adverb?</h3>
+<p>An <mark>adverb</mark> describes a <b>verb</b>, an <b>adjective</b>, or <b>another adverb</b>. It answers: <b>How? When? Where? How much?</b></p>
+<div class="tablewrap"><table>
+<tr><th>Question</th><th>Adverbs</th><th>Example</th></tr>
+<tr><td>How?</td><td>slowly, quietly, carefully, well</td><td>The turtle moved <b>slowly</b>.</td></tr>
+<tr><td>When?</td><td>yesterday, soon, now, later, always</td><td>We will leave <b>soon</b>.</td></tr>
+<tr><td>Where?</td><td>here, there, outside, everywhere</td><td>The kids played <b>outside</b>.</td></tr>
+<tr><td>How much?</td><td>very, too, extremely, almost</td><td>The test was <b>very</b> hard.</td></tr>
+</table></div>
+<div class="tip">💡 Many adverbs end in <b>-ly</b> (quick → quickly), but not all (fast, soon, very, well).</div>
+<h3>Adjective or adverb?</h3>
+<div class="rule">Describing a <b>noun</b> → adjective: She is a <b>quick</b> runner.<br>Describing a <b>verb</b> → adverb: She runs <b>quickly</b>.</div>
+<h3>Good vs. well</h3>
+<div class="rule"><b>good</b> = adjective (describes a noun, or comes after a linking verb): a good book; the pizza tastes good.<br><b>well</b> = adverb (describes how an action is done): She sings <b>well</b>. He did <b>well</b> on the test.</div>
+<div class="ex"><div><span class="n">✘</span> She plays piano good. <span class="y">✔</span> She plays piano well.</div><div><span class="n">✘</span> He ran real quick. <span class="y">✔</span> He ran really quickly.</div></div>
+<h3>No double negatives</h3>
+<div class="warn">⚠️ Use only ONE negative word (no, not, never, nothing, nobody, none, n't) in a clause.<br><span class="n">✘</span> I don't have no homework. <span class="y">✔</span> I don't have any homework. <span class="y">✔</span> I have no homework.</div>`,
+quiz:[
+[`Find the adverb: "The turtle moved slowly."`,[`turtle`,`moved`,`slowly`,`The`],2,`"Slowly" tells HOW it moved.`],
+[`"She plays the violin ___."`,[`good`,`well`],1,`It describes HOW she plays (a verb), so use the adverb "well."`],
+[`"That pizza tastes ___."`,[`good`,`well`],0,`"Tastes" is a linking verb here, so use the adjective "good."`],
+[`Which adverb tells WHEN?`,[`yesterday`,`loudly`,`here`,`very`],0,`"Yesterday" tells when.`],
+[`Which sentence has a double negative (a mistake)?`,[`I don't have any money.`,`I have no money.`,`I don't have no money.`,`I have hardly any money.`],2,`"don't" + "no" = two negatives.`],
+[`"The runner sprinted ___ to the finish line."`,[`quick`,`quickly`],1,`Describes how she sprinted → adverb.`],
+[`In "The test was very hard," what does "very" describe?`,[`test`,`was`,`hard`,`The`],2,`"Very" describes the adjective "hard." Adverbs can describe adjectives.`],
+[`Which sentence is correct?`,[`She did real good on the test.`,`She did really well on the test.`,`She did real well on the test.`,`She did really good on the test.`],1,`"really" (adverb) + "well" (adverb).`]
+],
+fix:[
+[`She sings good.`,[`She sings well.`],`Describes how she sings → "well."`],
+[`I don't have no homework tonight.`,[`I don't have any homework tonight.`,`I have no homework tonight.`,`I do not have any homework tonight.`],`Only one negative word.`],
+[`He ran real quick.`,[`He ran really quickly.`,`He ran very quickly.`,`He ran really fast.`,`He ran very fast.`],`"Real" and "quick" are adjectives. Use adverbs: really/very + quickly.`]
+],
+write:{p:`Write <b>6 to 8 sentences</b> describing HOW someone in your family does a task (cooking, driving, cleaning, playing a sport). Use at least <b>6 adverbs</b>: at least 2 that tell <i>how</i>, 1 that tells <i>when</i>, and 1 that tells <i>where</i>. Use "well" correctly at least once.`,
+list:[`I used at least 6 adverbs.`,`I included how, when, and where adverbs.`,`I used "well" (not "good") after an action verb.`,`I did not use any double negatives.`,`My sentences are complete and punctuated.`],min:70}
+},
+/* ---------------- DAY 11 ---------------- */
+{t:`Prepositions`, s:`Words that show position, direction and time`,
+lesson:`
+<h3>What is a preposition?</h3>
+<p>A <mark>preposition</mark> shows how a noun is <b>related</b> to another word — usually <b>where</b> or <b>when</b>.</p>
+<div class="tip">💡 <b>The box trick:</b> Think of a cat and a box. The cat can be <i>in, on, under, behind, beside, near, inside, above, around, through, over, between</i> the box. Most of those words are prepositions!</div>
+<div class="rule"><b>Common prepositions:</b> about, above, across, after, against, along, among, around, at, before, behind, below, beneath, beside, between, by, down, during, except, for, from, in, inside, into, near, of, off, on, onto, out, over, past, since, through, to, toward, under, until, up, upon, with, within, without</div>
+<h3>Prepositional phrases</h3>
+<p>A preposition + its <b>object</b> (a noun or pronoun) + any words in between = a <mark>prepositional phrase</mark>.</p>
+<div class="ex"><div>The cat hid <mark>under the bed</mark>. (preposition: under · object: bed)</div><div><mark>After school</mark>, Leo plays soccer <mark>with his friends</mark>.</div></div>
+<h3>Tricky pairs</h3>
+<div class="tablewrap"><table>
+<tr><th>Pair</th><th>Use</th></tr>
+<tr><td><b>between</b> / <b>among</b></td><td>between = 2 people/things · among = 3 or more<br>Split it <i>between</i> you and me. Split it <i>among</i> the five kids.</td></tr>
+<tr><td><b>in</b> / <b>into</b></td><td>in = location · into = movement from outside to inside<br>She is <i>in</i> the pool. She jumped <i>into</i> the pool.</td></tr>
+<tr><td><b>off</b> (not "off of")</td><td><span class="n">✘</span> Get off of the couch. <span class="y">✔</span> Get off the couch.</td></tr>
+</table></div>
+<div class="warn">⚠️ Remember from Day 3: after a preposition, use an <b>object pronoun</b>: with <b>me</b>, for <b>them</b>, between you and <b>me</b>.</div>`,
+quiz:[
+[`Find the preposition: "The cat hid under the bed."`,[`cat`,`hid`,`under`,`bed`],2,`"Under" shows where the cat is in relation to the bed.`],
+[`In "We walked to the store," what is the object of the preposition?`,[`We`,`walked`,`to`,`store`],3,`"to" is the preposition; "store" is its object.`],
+[`Find the prepositional phrase: "After school, Leo plays soccer."`,[`After school`,`Leo plays`,`plays soccer`,`school, Leo`],0,`"After" + "school."`],
+[`"Share the pizza ___ the two of you."`,[`between`,`among`],0,`Two people → between.`],
+[`"Share the pizza ___ all ten players."`,[`between`,`among`],1,`Three or more → among.`],
+[`"She jumped ___ the pool."`,[`in`,`into`],1,`Moving from outside to inside → into.`],
+[`Which sentence is correct?`,[`Get off of the couch.`,`Get off the couch.`],1,`"Off of" is extra. Just use "off."`],
+[`Which word is NOT a preposition?`,[`beside`,`during`,`through`,`quickly`],3,`"Quickly" is an adverb.`]
+],
+fix:[
+[`The cat jumped off of the table.`,[`The cat jumped off the table.`],`Remove the extra "of."`],
+[`Divide the candy between the five kids.`,[`Divide the candy among the five kids.`],`Five kids = more than two → among.`],
+[`Dad came with Riya and I.`,[`Dad came with Riya and me.`],`After "with," use the object pronoun "me."`]
+],
+write:{p:`Write clear directions (<b>7 to 9 sentences</b>) telling a visitor how to get from your front door to your bedroom or kitchen, OR from your classroom to the cafeteria. Use at least <b>8 prepositional phrases</b> (<i>through the hallway, past the stairs, next to the window...</i>).`,
+list:[`I used at least 8 prepositional phrases.`,`My directions are in a clear order.`,`I used "into" for movement and "in" for location.`,`I did not write "off of."`,`Someone could actually follow my directions.`],min:80}
+},
+/* ---------------- DAY 12 ---------------- */
+{t:`Conjunctions & Interjections`, s:`Joining words (FANBOYS and more) and feeling words`,
+lesson:`
+<h3>What is a conjunction?</h3>
+<p>A <mark>conjunction</mark> is a <b>joining word</b>. It connects words, phrases, or sentences.</p>
+<h3>1. Coordinating conjunctions — FANBOYS</h3>
+<div class="rule"><b>F</b>or · <b>A</b>nd · <b>N</b>or · <b>B</b>ut · <b>O</b>r · <b>Y</b>et · <b>S</b>o</div>
+<div class="tablewrap"><table>
+<tr><th>Word</th><th>Meaning</th><th>Example</th></tr>
+<tr><td>and</td><td>adds</td><td>I like soccer, <b>and</b> I like chess.</td></tr>
+<tr><td>but / yet</td><td>contrast (opposite)</td><td>I studied, <b>but</b> the test was hard.</td></tr>
+<tr><td>so</td><td>result</td><td>I was hungry, <b>so</b> I made a sandwich.</td></tr>
+<tr><td>or</td><td>choice</td><td>Do you want juice <b>or</b> milk?</td></tr>
+<tr><td>for</td><td>because (formal)</td><td>He smiled, <b>for</b> he had won.</td></tr>
+<tr><td>nor</td><td>not this either</td><td>He didn't call, <b>nor</b> did he write.</td></tr>
+</table></div>
+<div class="tip">💡 When FANBOYS joins two complete sentences, put a <b>comma before</b> it: <i>It rained, so we stayed in.</i></div>
+<h3>2. Subordinating conjunctions</h3>
+<div class="rule">because · although · when · while · if · since · after · before · unless · until · as · even though</div>
+<p>They make one part <b>depend</b> on the other: <i><b>Although</b> it was late, we kept reading.</i> · <i>We stayed in <b>because</b> it rained.</i></p>
+<div class="warn">⚠️ A clause starting with a subordinating conjunction can't stand alone. "Because it rained." is NOT a sentence (more on Day 14).</div>
+<h3>3. Correlative conjunctions (pairs)</h3>
+<div class="rule">either...<b>or</b> · neither...<b>nor</b> · both...<b>and</b> · not only...<b>but also</b><br>Neither Sam <b>nor</b> Maya came. (never "neither...or")</div>
+<h3>Interjections</h3>
+<p>An <mark>interjection</mark> shows strong feeling: <i>Wow! Ouch! Oh no! Hooray! Yikes!</i> Use an exclamation mark for strong feelings, or a comma for mild ones: <i>Oh, I forgot.</i></p>`,
+quiz:[
+[`What does FANBOYS stand for?`,[`For, And, Nor, But, Or, Yet, So`,`Find, Ask, Now, Begin, Open, Yell, Stop`,`For, After, Now, Because, Or, Yet, Since`,`Few, All, No, Both, One, Your, Some`],0,`These are the 7 coordinating conjunctions.`],
+[`"I wanted to play outside, ___ it was raining."`,[`and`,`but`,`so`,`or`],1,`The ideas contrast, so use "but."`],
+[`"I was hungry, ___ I made a sandwich."`,[`but`,`or`,`so`,`nor`],2,`Making a sandwich is the result → "so."`],
+[`Which is a subordinating conjunction?`,[`and`,`because`,`but`,`or`],1,`"Because" makes a dependent clause.`],
+[`"Neither Sam ___ Maya came to the party."`,[`or`,`nor`,`and`,`but`],1,`neither goes with nor.`],
+[`"___ it was late, we kept reading."`,[`Although`,`And`,`So`,`Or`],0,`"Although" shows contrast at the start of a sentence.`],
+[`Which is an interjection?`,[`Wow!`,`happy`,`under`,`because`],0,`"Wow!" shows strong feeling.`],
+[`"Would you like juice ___ milk?"`,[`or`,`nor`,`so`,`yet`],0,`Choice → "or."`]
+],
+fix:[
+[`I wanted to go outside, it was raining.`,[`I wanted to go outside, but it was raining.`,`I wanted to go outside, yet it was raining.`],`Add a FANBOYS word that shows contrast.`],
+[`Neither Sam or Maya came.`,[`Neither Sam nor Maya came.`],`neither → nor.`],
+[`I was tired so I went to bed early.`,[`I was tired, so I went to bed early.`],`Put a comma before FANBOYS when it joins two sentences.`]
+],
+write:{p:`Write <b>8 sentences</b> about your favorite season. Use at least <b>3 different FANBOYS</b> (with commas when joining two sentences), at least <b>3 different subordinating conjunctions</b> (because, although, when, if...), and <b>1 interjection</b>.`,
+list:[`I used 3 different FANBOYS conjunctions.`,`I put a comma before FANBOYS when joining two complete sentences.`,`I used 3 different subordinating conjunctions.`,`I used 1 interjection with correct punctuation.`,`None of my sentences is just a "Because..." fragment.`],min:80}
+},
+/* ---------------- DAY 13 ---------------- */
+{t:`The Sentence`, s:`Subject + predicate, and the four kinds of sentences`,
+lesson:`
+<h3>What makes a sentence complete?</h3>
+<div class="rule">A complete sentence needs <b>3 things</b>:<br>1. A <b>subject</b> — who or what the sentence is about<br>2. A <b>predicate</b> (with a verb) — what the subject does or is<br>3. A <b>complete thought</b> — it makes sense on its own</div>
+<div class="ex"><div><mark>The tall girl in the red coat</mark> | <b>won the race</b>.</div><div>Complete subject ↑ &nbsp;&nbsp;&nbsp;&nbsp; ↑ Complete predicate</div></div>
+<p>The <b>simple subject</b> is the main noun (<i>girl</i>). The <b>simple predicate</b> is the main verb (<i>won</i>).</p>
+<div class="tip">💡 <b>How to find them:</b> Find the verb first. Then ask "Who or what [verb]?" → that's the subject. "Who won?" → the girl.</div>
+<h3>The four kinds of sentences</h3>
+<div class="tablewrap"><table>
+<tr><th>Type</th><th>Job</th><th>Ends with</th><th>Example</th></tr>
+<tr><td><b>Declarative</b></td><td>makes a statement</td><td>.</td><td>The bell rang.</td></tr>
+<tr><td><b>Interrogative</b></td><td>asks a question</td><td>?</td><td>Do you like tacos?</td></tr>
+<tr><td><b>Imperative</b></td><td>gives a command or request</td><td>. or !</td><td>Please close the door.</td></tr>
+<tr><td><b>Exclamatory</b></td><td>shows strong feeling</td><td>!</td><td>What a beautiful sunset!</td></tr>
+</table></div>
+<div class="rule">In an imperative sentence, the subject is <b>"you" (understood)</b>. "Close the door." = "(You) close the door."</div>
+<div class="warn">⚠️ Every sentence starts with a <b>capital letter</b> and ends with <b>. ? or !</b> — no exceptions.</div>`,
+quiz:[
+[`What does every complete sentence need?`,[`A subject, a verb, and a complete thought`,`An adjective and a noun`,`At least ten words`,`A comma`],0,`Subject + verb + complete thought.`],
+[`Find the complete subject: "The tall girl in the red coat won the race."`,[`The tall girl in the red coat`,`won the race`,`the race`,`red coat`],0,`All the words about who did it.`],
+[`Find the simple predicate (main verb): "My little brother ate all the cookies."`,[`brother`,`ate`,`cookies`,`little`],1,`"Ate" is the main verb.`],
+[`"Please close the window." This sentence is...`,[`declarative`,`interrogative`,`imperative`,`exclamatory`],2,`It gives a request/command.`],
+[`"Do you like tacos?" is...`,[`declarative`,`interrogative`,`imperative`,`exclamatory`],1,`It asks a question.`],
+[`"What a beautiful sunset!" is...`,[`declarative`,`interrogative`,`imperative`,`exclamatory`],3,`It shows strong feeling.`],
+[`In "Close the door," what is the subject?`,[`door`,`Close`,`"You" — it is understood`,`There is no subject`],2,`Commands have an understood "you."`],
+[`Which is a complete sentence?`,[`Running down the hall.`,`The boy in the blue shirt.`,`The bell rang.`,`Because I said so.`],2,`It has a subject (bell), verb (rang), and complete thought.`]
+],
+fix:[
+[`what time is it.`,[`What time is it?`],`Capital letter, and a question needs a question mark.`],
+[`please close the door`,[`Please close the door.`,`Please close the door!`],`Capital letter and end punctuation.`],
+[`wow, that was amazing`,[`Wow, that was amazing!`],`Strong feeling → exclamation mark.`]
+],
+write:{p:`Write about a school trip or a family outing using <b>8 sentences</b>: <b>2 declarative, 2 interrogative, 2 imperative, and 2 exclamatory</b>. Label each one with (D), (Int), (Imp), or (E) at the end.`,
+list:[`I wrote 2 of each kind of sentence.`,`I labeled every sentence.`,`Each sentence has the right end mark.`,`Every sentence starts with a capital letter.`,`Every sentence is a complete thought.`],min:60}
+},
+/* ---------------- DAY 14 ---------------- */
+{t:`Fragments & Run-ons`, s:`The two biggest sentence mistakes — and how to fix them`,
+lesson:`
+<h3>Fragments (not enough)</h3>
+<p>A <mark>fragment</mark> is a piece of a sentence pretending to be a whole one. It is missing a subject, a verb, or a complete thought.</p>
+<div class="ex"><div><span class="n">✘</span> Running down the street. <i>(Who?)</i></div><div><span class="n">✘</span> The dog that lives next door. <i>(What about it?)</i></div><div><span class="n">✘</span> Because it was raining. <i>(Then what?)</i></div></div>
+<div class="rule"><b>Fix a fragment:</b> add what's missing, OR attach it to the sentence next to it.<br><span class="y">✔</span> I saw a boy running down the street.<br><span class="y">✔</span> The dog that lives next door barks all night.<br><span class="y">✔</span> We stayed inside because it was raining.</div>
+<h3>Run-ons and comma splices (too much)</h3>
+<p>A <mark>run-on</mark> crashes two complete sentences together with nothing between them. A <mark>comma splice</mark> joins them with only a comma.</p>
+<div class="ex"><div><span class="n">✘ Run-on:</span> I love pizza it is my favorite food.</div><div><span class="n">✘ Comma splice:</span> I love pizza, it is my favorite food.</div></div>
+<div class="rule"><b>4 ways to fix a run-on:</b><br>1. <b>Period:</b> I love pizza. It is my favorite food.<br>2. <b>Comma + FANBOYS:</b> I love pizza, and it is my favorite food.<br>3. <b>Semicolon:</b> I love pizza; it is my favorite food.<br>4. <b>Subordinating conjunction:</b> I love pizza because it is my favorite food.</div>
+<div class="tip">💡 <b>Read it aloud.</b> Where you naturally stop and take a breath, you probably need a period. Where you hear "Then what?", you have a fragment.</div>`,
+quiz:[
+[`Which is a FRAGMENT?`,[`I love soccer.`,`Because it was cold.`,`We went home.`,`She smiled.`],1,`"Because it was cold" is not a complete thought.`],
+[`Which is a RUN-ON sentence?`,[`I like dogs they are fun.`,`I like dogs. They are fun.`,`I like dogs because they are fun.`,`I like dogs; they are fun.`],0,`Two sentences crashed together.`],
+[`What is a comma splice?`,[`Two sentences joined with only a comma`,`A sentence with no verb`,`A list with commas`,`A question without a question mark`],0,`A comma alone is not strong enough to join two sentences.`],
+[`Which correctly fixes "It was late we went home"?`,[`It was late, we went home.`,`It was late, so we went home.`,`It was late we, went home.`,`It was late so we went home,`],1,`Comma + FANBOYS.`],
+[`Which is a fragment?`,[`After the game ended.`,`The game ended.`,`We cheered after the game ended.`,`The game ended, and we cheered.`],0,`"After the game ended" — then what?`],
+[`Which fixes the fragment "Wearing a big hat."?`,[`Wearing a big hat!`,`The man was wearing a big hat.`,`Wearing, a big hat.`,`Wearing a big hat and.`],1,`It now has a subject and full verb.`],
+[`Which is correct?`,[`I studied hard, I passed the test.`,`I studied hard I passed the test.`,`I studied hard, and I passed the test.`,`I studied hard and, I passed the test.`],2,`Comma + "and."`],
+[`Is this complete? "The dog that lives next door."`,[`Yes, it is complete`,`No, it is a fragment — what about the dog?`,`No, it is a run-on`,`Yes, but it needs a question mark`],1,`There is no main verb telling what the dog does.`]
+],
+fix:[
+[`I love pizza it is my favorite food.`,[`I love pizza. It is my favorite food.`,`I love pizza; it is my favorite food.`,`I love pizza because it is my favorite food.`,`I love pizza, and it is my favorite food.`],`Use a period, a semicolon, comma + FANBOYS, or "because."`],
+[`We stayed inside. Because it was raining.`,[`We stayed inside because it was raining.`],`Attach the fragment to the sentence before it.`],
+[`The game was fun, we won by ten points.`,[`The game was fun, and we won by ten points.`,`The game was fun. We won by ten points.`,`The game was fun; we won by ten points.`,`The game was fun because we won by ten points.`],`This is a comma splice. Fix it one of the 4 ways.`]
+],
+write:{p:`<b>Editing challenge!</b> The paragraph below is full of fragments and run-ons. Rewrite it correctly in the box. Then add <b>3 sentences of your own</b> about a fun day you had — with no fragments or run-ons.<div class="passage">my summer was fun I went to the beach with my family. Because we wanted to see the ocean. we built a sandcastle it was huge my little brother knocked it down, I was a little mad. Eating ice cream on the boardwalk. it was the best day ever</div>`,
+list:[`I fixed every run-on and comma splice.`,`I fixed every fragment.`,`I used at least two different fixing methods.`,`Every sentence starts with a capital and ends with punctuation.`,`I added 3 correct sentences of my own.`],min:70}
+},
+/* ---------------- DAY 15 ---------------- */
+{t:`Simple, Compound & Complex Sentences`, s:`Building sentence variety like a real writer`,
+lesson:`
+<h3>First, two kinds of clauses</h3>
+<div class="rule">A <b>clause</b> is a group of words with a subject and a verb.<br><b>Independent clause</b> = can stand alone as a sentence: <i>we ran outside</i><br><b>Dependent clause</b> = can NOT stand alone (starts with because, when, if, although...): <i>when the bell rang</i></div>
+<h3>The three sentence types</h3>
+<div class="tablewrap"><table>
+<tr><th>Type</th><th>Recipe</th><th>Example</th></tr>
+<tr><td><b>Simple</b></td><td>1 independent clause</td><td>The cat slept.<br>Sam and Tia laughed and clapped. <i>(still simple — one clause)</i></td></tr>
+<tr><td><b>Compound</b></td><td>independent + <b>, FANBOYS</b> + independent<br>(or independent <b>;</b> independent)</td><td>I studied, <b>and</b> I passed.<br>It was late; we went home.</td></tr>
+<tr><td><b>Complex</b></td><td>independent + dependent clause</td><td><b>When the bell rang</b>, we ran outside.<br>We ran outside <b>when the bell rang</b>.</td></tr>
+</table></div>
+<div class="rule"><b>Comma rule for complex sentences:</b> If the dependent clause comes FIRST, put a comma after it. If it comes second, you usually don't need one.<br><i>If you finish early, you may read.</i> · <i>You may read if you finish early.</i></div>
+<h3>Why does this matter?</h3>
+<p>Good writers <b>mix</b> sentence types so their writing doesn't sound choppy.</p>
+<div class="ex"><div><span class="n">Choppy:</span> I was tired. I had homework. I finished it. I went to bed.</div><div><span class="y">Smooth:</span> Although I was tired, I finished my homework, and then I went to bed.</div></div>`,
+quiz:[
+[`"The cat slept." is a...`,[`simple sentence`,`compound sentence`,`complex sentence`,`fragment`],0,`One independent clause.`],
+[`"I studied, and I passed." is a...`,[`simple`,`compound`,`complex`,`fragment`],1,`Two independent clauses joined with ", and."`],
+[`"When the bell rang, we ran outside." is a...`,[`simple`,`compound`,`complex`,`run-on`],2,`Dependent clause + independent clause.`],
+[`A compound sentence joins two independent clauses with...`,[`a comma + FANBOYS, or a semicolon`,`only a comma`,`nothing`,`an adjective`],0,`A comma alone would be a comma splice.`],
+[`Which is the dependent clause? "We stayed inside because it was raining."`,[`We stayed inside`,`because it was raining`,`stayed inside`,`We stayed`],1,`It starts with "because" and can't stand alone.`],
+[`"Sam and Tia laughed and clapped." is...`,[`simple`,`compound`,`complex`,`run-on`],0,`Two subjects and two verbs, but only ONE clause.`],
+[`Where does the comma go? "If you finish early you may read."`,[`If, you finish early you may read.`,`If you finish early, you may read.`,`If you finish, early you may read.`,`No comma needed`],1,`Put the comma after the dependent clause when it comes first.`],
+[`Which best combines "I was tired. I finished my homework."?`,[`I was tired, I finished my homework.`,`Although I was tired, I finished my homework.`,`I was tired I finished my homework.`,`Although I was tired. I finished my homework.`],1,`A correct complex sentence.`]
+],
+fix:[
+[`Combine: The sun set. The sky turned orange.`,[`When the sun set, the sky turned orange.`,`As the sun set, the sky turned orange.`,`The sun set, and the sky turned orange.`,`The sky turned orange when the sun set.`,`The sky turned orange as the sun set.`],`Make one compound or complex sentence. (Don't type "Combine:".)`],
+[`Combine: It was raining. We played inside.`,[`It was raining, so we played inside.`,`Because it was raining, we played inside.`,`We played inside because it was raining.`,`Since it was raining, we played inside.`,`We played inside since it was raining.`],`Use "so" or "because."`],
+[`Fix the comma: Before we left we locked the door.`,[`Before we left, we locked the door.`],`Dependent clause first → comma after it. (Don't type "Fix the comma:".)`]
+],
+write:{p:`Write a paragraph of <b>7 to 9 sentences</b> about a person you admire (a hero, family member, coach, scientist). Include at least <b>2 simple</b>, <b>2 compound</b>, and <b>2 complex</b> sentences. Label them (S), (C), (Cx) at the end.`,
+list:[`I wrote at least 2 simple, 2 compound, and 2 complex sentences.`,`My compound sentences use a comma + FANBOYS or a semicolon.`,`I put a comma after a dependent clause that comes first.`,`My paragraph reads smoothly, not choppy.`,`I labeled each sentence.`],min:90}
+},
+/* ---------------- DAY 16 ---------------- */
+{t:`Capitalization`, s:`All the rules for capital letters`,
+lesson:`
+<h3>Always capitalize...</h3>
+<div class="tablewrap"><table>
+<tr><th>Rule</th><th>Examples</th></tr>
+<tr><td>The first word of every sentence</td><td><b>T</b>he dog barked.</td></tr>
+<tr><td>The word <b>I</b></td><td>Mom and <b>I</b> went shopping.</td></tr>
+<tr><td>Names of people and pets</td><td><b>A</b>nanya, <b>M</b>ax, <b>D</b>r. <b>P</b>atel</td></tr>
+<tr><td>Specific places</td><td><b>B</b>oston, <b>M</b>assachusetts, <b>I</b>ndia, <b>L</b>ake <b>M</b>ichigan</td></tr>
+<tr><td>Days, months, holidays</td><td><b>M</b>onday, <b>J</b>uly, <b>D</b>iwali, <b>T</b>hanksgiving</td></tr>
+<tr><td>Languages, nationalities</td><td><b>E</b>nglish, <b>S</b>panish, <b>H</b>indi, <b>A</b>merican</td></tr>
+<tr><td>Titles before names</td><td><b>D</b>r. Lee, <b>M</b>rs. Gomez, <b>U</b>ncle <b>R</b>aj, <b>P</b>resident Lincoln</td></tr>
+<tr><td>Main words in titles of books, movies, songs</td><td><i><b>C</b>harlotte's <b>W</b>eb</i>, <i>The <b>L</b>ion, the <b>W</b>itch and the <b>W</b>ardrobe</i></td></tr>
+<tr><td>Names of companies, schools, teams</td><td><b>G</b>oogle, <b>L</b>incoln <b>M</b>iddle <b>S</b>chool, <b>R</b>ed <b>S</b>ox</td></tr>
+</table></div>
+<div class="rule"><b>In titles,</b> capitalize the first and last word and all important words. Keep small words (a, an, the, and, but, or, of, in, on, at, to) lowercase unless they are first.</div>
+<h3>Do NOT capitalize...</h3>
+<div class="tablewrap"><table>
+<tr><th>Rule</th><th>✘ Wrong</th><th>✔ Right</th></tr>
+<tr><td>Seasons</td><td>I love Summer.</td><td>I love summer.</td></tr>
+<tr><td>School subjects (except languages)</td><td>I like Math and Science.</td><td>I like math, science, and English.</td></tr>
+<tr><td>Family words after my/your/his</td><td>My Mom is a nurse.</td><td>My mom is a nurse. (But: "Thanks, Mom!")</td></tr>
+<tr><td>Directions (when it means which way)</td><td>Drive North.</td><td>Drive north. (But: "We live in the South.")</td></tr>
+<tr><td>Titles NOT before a name</td><td>The Doctor was kind.</td><td>The doctor was kind.</td></tr>
+<tr><td>Random important words</td><td>We had a Big Test.</td><td>We had a big test.</td></tr>
+</table></div>
+<div class="tip">💡 <b>Mom/Dad trick:</b> If you can replace it with a name (Thanks, <i>Priya</i>!), capitalize it. If "my" or "your" is in front, don't.</div>`,
+quiz:[
+[`Which is capitalized correctly?`,[`we visited aunt priya in july.`,`We visited Aunt Priya in July.`,`We Visited Aunt Priya In July.`,`We visited aunt Priya in july.`],1,`First word, title + name, and month.`],
+[`Which is correct?`,[`I love Summer.`,`I love summer.`],1,`Seasons are not capitalized.`],
+[`Which is correct?`,[`My Mom made dinner.`,`my mom made dinner.`,`My mom made dinner.`,`My MOM made dinner.`],2,`After "my," don't capitalize mom.`],
+[`Which is correct?`,[`Can I go, mom?`,`Can I go, Mom?`],1,`Here "Mom" is used as a name.`],
+[`Which book title is correct?`,[`The Lion, The Witch And The Wardrobe`,`The Lion, the Witch and the Wardrobe`,`the lion, the witch and the wardrobe`,`The lion, the witch and the wardrobe`],1,`Capitalize main words; keep "the" and "and" small (except at the start).`],
+[`Which is correct?`,[`We drove North for an hour.`,`We drove north for an hour.`],1,`A direction of travel is lowercase.`],
+[`Which school subject needs a capital?`,[`science`,`math`,`english`,`history`],2,`English is a language, so it is always capitalized.`],
+[`Which is correct?`,[`I saw Dr. Patel today.`,`I saw dr. Patel today.`,`I saw Dr. patel today.`,`i saw Dr. Patel today.`],0,`Title before a name + name are capitalized.`]
+],
+fix:[
+[`last summer, my mom and i drove south to florida.`,[`Last summer, my mom and I drove south to Florida.`],`First word, "I," and the state. Not summer, mom, or south.`],
+[`we read charlotte's web in english class.`,[`We read Charlotte's Web in English class.`],`Book title and the language.`],
+[`on thanksgiving, uncle raj visited us from india.`,[`On Thanksgiving, Uncle Raj visited us from India.`],`Holiday, title + name, and country.`]
+],
+write:{p:`Write a short email or letter (<b>7 to 9 sentences</b>) to a relative telling them about a holiday, trip, or event. Include: a <b>greeting</b> (Dear ___,), at least <b>2 people's names</b>, <b>2 places</b>, <b>1 holiday or month</b>, <b>1 title of a book/movie/song</b>, and a <b>closing</b> (Love, / Your grandson,).`,
+list:[`I capitalized every name, place, month, and holiday.`,`I capitalized the main words in a title.`,`I did NOT capitalize seasons, subjects (except languages), or "my mom."`,`I capitalized "I" every time.`,`I included a greeting and a closing.`],min:80}
+},
+/* ---------------- DAY 17 ---------------- */
+{t:`Commas`, s:`The seven comma rules every writer needs`,
+lesson:`
+<p>A <mark>comma ( , )</mark> tells the reader to take a short pause. Commas have specific jobs — don't just sprinkle them in!</p>
+<div class="rule"><b>Rule 1 — Items in a list</b><br>I bought eggs<b>,</b> milk<b>,</b> and bread.<br><small>(The comma before "and" is called the Oxford comma. Many teachers want it — it makes lists clearer.)</small></div>
+<div class="rule"><b>Rule 2 — After introductory words</b><br>Yes<b>,</b> I can come. · Well<b>,</b> that was strange. · However<b>,</b> it rained. · First<b>,</b> preheat the oven.</div>
+<div class="rule"><b>Rule 3 — After a dependent clause or long phrase at the start</b><br>When the bell rang<b>,</b> the students lined up. · After a long day at school<b>,</b> I took a nap.</div>
+<div class="rule"><b>Rule 4 — Before FANBOYS joining two sentences</b><br>I ran fast<b>,</b> but I still lost.</div>
+<div class="rule"><b>Rule 5 — Direct address (talking TO someone by name)</b><br>Mom<b>,</b> can I go outside? · Thanks<b>,</b> Leo. · Listen<b>,</b> class<b>,</b> to the instructions.</div>
+<div class="rule"><b>Rule 6 — Extra information (interrupters / appositives)</b><br>Max<b>,</b> my dog<b>,</b> loves bones. · My teacher<b>,</b> Mr. Kim<b>,</b> is funny.<br><small>Test: if you remove the words between the commas, the sentence still works.</small></div>
+<div class="rule"><b>Rule 7 — Dates and addresses</b><br>July 4<b>,</b> 1776 · Monday<b>,</b> June 5 · Boston<b>,</b> Massachusetts</div>
+<div class="warn">⚠️ <b>Don't put a comma</b> between a subject and its verb: <span class="n">✘</span> My best friend, lives next door. And remember: a comma alone can't join two sentences (comma splice — Day 14).</div>
+<div class="tip">💡 "Let's eat<b>,</b> Grandma!" vs "Let's eat Grandma!" — commas save lives. 😄</div>`,
+quiz:[
+[`Which list uses commas correctly?`,[`I like red, blue, and green.`,`I like red blue, and green.`,`I like, red, blue, and green.`,`I like red, blue, and, green.`],0,`Commas separate each item.`],
+[`Where does the comma go? "Mom can I have a snack?"`,[`Mom, can I have a snack?`,`Mom can I, have a snack?`,`Mom can, I have a snack?`,`No comma needed`],0,`Direct address: you are talking TO Mom.`],
+[`Which is correct?`,[`Yes I would love to come.`,`Yes, I would love to come.`],1,`Comma after an introductory word.`],
+[`Which compound sentence is punctuated correctly?`,[`I ran fast but I lost.`,`I ran fast, but I lost.`,`I ran fast but, I lost.`,`I ran, fast but I lost.`],1,`Comma before FANBOYS.`],
+[`Which date is correct?`,[`July 4 1776`,`July, 4 1776`,`July 4, 1776`,`July 4 1776,`],2,`Comma between the day and the year.`],
+[`Which is correct?`,[`She lives in Austin Texas.`,`She lives in Austin, Texas.`,`She lives in, Austin Texas.`],1,`Comma between city and state.`],
+[`Which uses commas around extra information correctly?`,[`My dog, Max loves bones.`,`My dog Max, loves bones.`,`Max, my dog, loves bones.`,`Max my dog, loves bones.`],2,`"my dog" is extra information, so commas go on both sides.`],
+[`Which is correct?`,[`When we got home, we ate dinner.`,`When we got home we, ate dinner.`,`When, we got home we ate dinner.`],0,`Comma after the introductory dependent clause.`]
+],
+fix:[
+[`I bought eggs milk and bread.`,[`I bought eggs, milk, and bread.`,`I bought eggs, milk and bread.`],`Separate list items with commas.`],
+[`Mom can I go outside?`,[`Mom, can I go outside?`],`Direct address needs a comma.`],
+[`When the bell rang the students lined up.`,[`When the bell rang, the students lined up.`],`Comma after the dependent clause at the start.`]
+],
+write:{p:`Write <b>8 sentences</b> about a trip, party, or big day. Use each comma rule at least once: a <b>list</b>, an <b>introductory word</b>, a <b>dependent clause</b> at the start, <b>FANBOYS</b> joining sentences, <b>direct address</b>, <b>extra information</b> between commas, and a <b>date or city, state</b>.`,
+list:[`I used a list with commas.`,`I used an introductory word or clause with a comma.`,`I used a comma before FANBOYS in a compound sentence.`,`I used direct address with a comma.`,`I used commas around extra information.`,`I used a comma in a date or a city, state.`],min:80}
+},
+/* ---------------- DAY 18 ---------------- */
+{t:`Apostrophes, Quotes, Colons & Semicolons`, s:`The rest of the punctuation toolbox`,
+lesson:`
+<h3>Apostrophes ( ' )</h3>
+<div class="rule"><b>Job 1 — Contractions</b> (the apostrophe replaces missing letters):<br>do not → don't · can not → can't · will not → won't · I am → I'm · it is → it's · they are → they're · you are → you're · we are → we're · I have → I've · she would → she'd<br><b>Job 2 — Possession</b> (Day 2): Sam's bike, the dogs' bowls</div>
+<h3>Quotation marks ( " " ) for dialogue</h3>
+<div class="rule">Put the <b>exact words</b> someone says inside quotation marks.<br>1. Commas and periods go <b>inside</b> the closing quotation mark.<br>2. Use a comma to separate the speaker tag from the quote.<br>3. Capitalize the first word of the quote.<br>4. Start a <b>new paragraph</b> every time a new person speaks.</div>
+<div class="ex"><div><span class="y">✔</span> "I can't come," said Ben.</div><div><span class="y">✔</span> Ben said, "I can't come."</div><div><span class="y">✔</span> "Are you ready?" she asked.</div><div><span class="y">✔</span> She asked, "Are you ready?"</div><div><span class="n">✘</span> "I can't come" said Ben. &nbsp; <span class="n">✘</span> "I can't come", said Ben.</div></div>
+<p>Quotation marks also go around titles of <b>short works</b>: songs, poems, short stories, articles. (Books and movies are written in <i>italics</i> or underlined.)</p>
+<h3>Colon ( : )</h3>
+<div class="rule">Use a colon <b>after a complete sentence</b> to introduce a list or explanation.<br><span class="y">✔</span> You need three things: a pencil, an eraser, and paper.<br><span class="n">✘</span> You need: a pencil, an eraser, and paper. <i>("You need" is not complete.)</i><br>Also used in times: 3:45 p.m.</div>
+<h3>Semicolon ( ; )</h3>
+<div class="rule">A semicolon joins two <b>closely related complete sentences</b> without a conjunction.<br><span class="y">✔</span> I love pizza; it is my favorite food.<br>Test: each side of the semicolon must be able to stand alone as a sentence.</div>`,
+quiz:[
+[`Which contraction is correct for "do not"?`,[`do'nt`,`dont'`,`don't`,`dont`],2,`The apostrophe replaces the missing "o."`],
+[`Which dialogue is punctuated correctly?`,[`"I'm hungry" said Ben.`,`"I'm hungry," said Ben.`,`"I'm hungry", said Ben.`,`"I'm hungry. said Ben."`],1,`Comma goes inside the closing quotation mark.`],
+[`Which is correct?`,[`She asked, "Are you ready?"`,`She asked, "Are you ready"?`,`She asked "are you ready?"`,`She asked, Are you ready?`],0,`Comma after "asked," capital A, question mark inside.`],
+[`Where should the colon go?`,[`I need: a pencil, paper, and glue.`,`I need three things: a pencil, paper, and glue.`,`I: need three things a pencil, paper, and glue.`],1,`A colon comes after a complete sentence.`],
+[`Which uses a semicolon correctly?`,[`I love pizza; it is delicious.`,`I love; pizza it is delicious.`,`I love pizza; and delicious.`,`I; love pizza.`],0,`Two complete sentences on each side.`],
+[`"we are" as a contraction is...`,[`were`,`we're`,`wer'e`,`w'ere`],1,`we + are = we're. ("were" is a different word.)`],
+[`Which is correct for a POEM title?`,[`I read the poem "The Road Not Taken."`,`I read the poem The Road Not Taken.`],0,`Short works like poems go in quotation marks.`],
+[`When writing dialogue, what do you do when a NEW person starts speaking?`,[`Start a new paragraph`,`Use a semicolon`,`Keep it on the same line`,`Use all capital letters`],0,`New speaker = new paragraph.`]
+],
+fix:[
+[`"I can't come" said Ben.`,[`"I can't come," said Ben.`],`Add a comma inside the closing quotation mark.`],
+[`She asked "are you ready?"`,[`She asked, "Are you ready?"`],`Comma after "asked," and capitalize the first word of the quote.`],
+[`You need three things a pencil, an eraser, and paper.`,[`You need three things: a pencil, an eraser, and paper.`],`Use a colon after a complete sentence to introduce a list.`]
+],
+write:{p:`Write a short scene of <b>8 to 10 lines of dialogue</b> between two characters (for example: two friends who find a mysterious box). Start a <b>new paragraph</b> each time the speaker changes. Also include <b>3 contractions</b>, <b>1 colon</b>, and <b>1 semicolon</b>.`,
+list:[`Every spoken sentence is inside quotation marks.`,`Commas and periods are inside the closing quotation marks.`,`I started a new paragraph for each new speaker.`,`I used 3 contractions with apostrophes in the right place.`,`I used a colon and a semicolon correctly.`],min:90}
+},
+/* ---------------- DAY 19 ---------------- */
+{t:`Commonly Confused Words`, s:`their/there/they're, your/you're, its/it's and more`,
+lesson:`
+<p>These words sound alike but mean different things. Spell-check won't catch them — you have to!</p>
+<div class="tablewrap"><table>
+<tr><th>Word</th><th>Meaning</th><th>Example</th><th>Memory trick</th></tr>
+<tr><td><b>their</b></td><td>belongs to them</td><td>their house</td><td>has "heir" (someone who owns)</td></tr>
+<tr><td><b>there</b></td><td>a place</td><td>over there</td><td>has "here" inside it</td></tr>
+<tr><td><b>they're</b></td><td>they are</td><td>They're late.</td><td>Say "they are" — does it fit?</td></tr>
+<tr><td><b>your</b></td><td>belongs to you</td><td>your bag</td><td>"our" is inside — ownership</td></tr>
+<tr><td><b>you're</b></td><td>you are</td><td>You're kind.</td><td>Say "you are"</td></tr>
+<tr><td><b>its</b></td><td>belongs to it</td><td>its tail</td><td>like his/hers — no apostrophe</td></tr>
+<tr><td><b>it's</b></td><td>it is / it has</td><td>It's cold.</td><td>Say "it is"</td></tr>
+<tr><td><b>to</b></td><td>direction / before a verb</td><td>go to school, to run</td><td></td></tr>
+<tr><td><b>too</b></td><td>also / very much</td><td>me too, too hot</td><td>has too many o's</td></tr>
+<tr><td><b>two</b></td><td>the number 2</td><td>two dogs</td><td>tw = twin, twelve</td></tr>
+<tr><td><b>then</b></td><td>time / next</td><td>First eat, then play.</td><td>th<b>e</b>n = wh<b>e</b>n</td></tr>
+<tr><td><b>than</b></td><td>comparing</td><td>taller than me</td><td>th<b>a</b>n = comp<b>a</b>re</td></tr>
+<tr><td><b>whose</b></td><td>belongs to whom</td><td>Whose coat?</td><td></td></tr>
+<tr><td><b>who's</b></td><td>who is / who has</td><td>Who's there?</td><td>Say "who is"</td></tr>
+<tr><td><b>were</b> / <b>where</b> / <b>we're</b></td><td>past of are / place / we are</td><td>We were late. Where is it? We're here.</td><td>wh<b>ere</b> has "here"</td></tr>
+<tr><td><b>lose</b> / <b>loose</b></td><td>misplace / not tight</td><td>Don't lose it. A loose tooth.</td><td>loose has an extra o (loose goose)</td></tr>
+<tr><td><b>affect</b> / <b>effect</b></td><td>to change (verb) / a result (noun)</td><td>Rain affects plans. The effect was big.</td><td><b>A</b>ffect = <b>A</b>ction, <b>E</b>ffect = <b>E</b>nd result</td></tr>
+<tr><td><b>accept</b> / <b>except</b></td><td>to receive / leaving out</td><td>I accept. Everyone except Sam.</td><td>e<b>x</b>cept = e<b>x</b>clude</td></tr>
+</table></div>
+<div class="tip">💡 <b>The best trick of all:</b> For any word with an apostrophe, read it as two words (they are, you are, it is, who is). If it doesn't make sense, use the version WITHOUT the apostrophe.</div>
+<div class="warn">⚠️ Also watch out for: <b>a lot</b> (two words, never "alot") and <b>should have</b> (never "should of").</div>`,
+quiz:[
+[`"___ going to the mall later."`,[`Their`,`There`,`They're`],2,`They are going → They're.`],
+[`"Put the box over ___."`,[`their`,`there`,`they're`],1,`A place → there.`],
+[`"___ backpack is heavy."`,[`Your`,`You're`],0,`Belongs to you → your.`],
+[`"The bird built ___ nest."`,[`its`,`it's`],0,`Belongs to it → its. ("It is nest" doesn't make sense.)`],
+[`"I want to come ___!"`,[`to`,`too`,`two`],1,`Also → too.`],
+[`"My cat is bigger ___ your cat."`,[`then`,`than`],1,`Comparing → than.`],
+[`"Don't ___ your keys!"`,[`loose`,`lose`],1,`Misplace → lose.`],
+[`"___ jacket is this?"`,[`Who's`,`Whose`],1,`Belongs to whom → whose.`],
+[`"The rain will ___ our picnic plans."`,[`affect`,`effect`],0,`It is an action (verb) → affect.`],
+[`"___ were you yesterday?"`,[`Were`,`Where`,`We're`],1,`Asking about a place → where.`]
+],
+fix:[
+[`Their going to there house.`,[`They're going to their house.`],`"They are going" → They're. Belongs to them → their.`],
+[`Your the best, and I'm proud of you to.`,[`You're the best, and I'm proud of you too.`],`You are → you're. Also → too.`],
+[`My brother is taller then me.`,[`My brother is taller than me.`,`My brother is taller than I am.`,`My brother is taller than I.`],`Comparing → than.`]
+],
+write:{p:`Write a funny paragraph (<b>8 to 10 sentences</b>) about a pet or animal that causes trouble. Use at least <b>10 words from today's list correctly</b> (for example: their, there, they're, your, you're, its, it's, too, than, then, whose, lose...). At the end, list the words you used.`,
+list:[`I used at least 10 confused words correctly.`,`I checked every apostrophe word by reading it as two words.`,`I wrote "a lot" as two words (if I used it).`,`I listed the words I used.`,`My paragraph is complete with correct punctuation.`],min:90}
+},
+/* ---------------- DAY 20 ---------------- */
+{t:`The Paragraph & Final Review`, s:`Putting it all together: structure, transitions and editing`,
+lesson:`
+<h3>The hamburger paragraph 🍔</h3>
+<p>A strong paragraph is built like a hamburger:</p>
+<div class="tablewrap"><table>
+<tr><th>Part</th><th>Job</th><th>Example (opinion: dogs are great pets)</th></tr>
+<tr><td><b>🍞 Top bun — Topic sentence</b></td><td>States the main idea</td><td>Dogs make the best pets for three reasons.</td></tr>
+<tr><td><b>🥬🍅🥩 Fillings — 3 supporting details</b></td><td>Reasons, facts, examples. Each one explained with 1–2 sentences.</td><td><b>First,</b> dogs are loyal... <b>For example,</b> my dog waits at the door every day. <b>Also,</b> dogs keep you active... <b>Finally,</b> dogs are fun...</td></tr>
+<tr><td><b>🍞 Bottom bun — Concluding sentence</b></td><td>Restates the main idea in new words</td><td><b>In conclusion,</b> because they are loyal, active, and fun, dogs are wonderful pets.</td></tr>
+</table></div>
+<h3>Transition words (the glue)</h3>
+<div class="cols">
+<div class="ex"><b>Order:</b><div>first, second, next, then, after that, finally</div></div>
+<div class="ex"><b>Add:</b><div>also, in addition, another reason, furthermore</div></div>
+<div class="ex"><b>Example:</b><div>for example, for instance, such as</div></div>
+<div class="ex"><b>Contrast:</b><div>however, on the other hand, but, although</div></div>
+<div class="ex"><b>Conclude:</b><div>in conclusion, overall, in the end, as you can see</div></div>
+</div>
+<h3>The writing process</h3>
+<div class="rule"><b>1. Plan</b> (brainstorm and outline) → <b>2. Draft</b> (write it all down) → <b>3. Revise</b> (make it better) → <b>4. Edit</b> (fix mistakes) → <b>5. Publish</b></div>
+<div class="cols">
+<div class="tip"><b>Revise with ARMS</b> (make it better)<br><b>A</b>dd details · <b>R</b>emove extra words · <b>M</b>ove sentences into a better order · <b>S</b>ubstitute stronger words</div>
+<div class="tip"><b>Edit with CUPS</b> (fix mistakes)<br><b>C</b>apitalization · <b>U</b>sage (grammar — subject-verb agreement, pronouns, tense) · <b>P</b>unctuation · <b>S</b>pelling</div>
+</div>
+<h3>Your 20-day editing checklist</h3>
+<div class="ex">
+<div>☐ Capitals on names, places, days, and "I" (Days 1, 16)</div>
+<div>☐ Plurals without apostrophes; possessives with them (Day 2)</div>
+<div>☐ "___ and I" as subject, "___ and me" as object (Day 3)</div>
+<div>☐ its / it's, your / you're, their / there / they're (Days 4, 19)</div>
+<div>☐ Same tense all the way through; correct irregular verbs (Days 6, 7)</div>
+<div>☐ Subjects and verbs agree (Day 8)</div>
+<div>☐ good/well; no double negatives (Day 10)</div>
+<div>☐ No fragments or run-ons (Day 14)</div>
+<div>☐ Mix of simple, compound, and complex sentences (Day 15)</div>
+<div>☐ Commas in the right places (Day 17)</div>
+</div>`,
+quiz:[
+[`Which is a proper noun?`,[`ocean`,`Pacific Ocean`,`water`,`wave`],1,`It names a specific ocean. (Day 1)`],
+[`"Dad gave the tickets to Ava and ___."`,[`I`,`me`],1,`Cover "Ava and": "gave the tickets to me." (Day 3)`],
+[`"The list of chores ___ long."`,[`is`,`are`],0,`The subject is "list" (singular). (Day 8)`],
+[`"I have ___ my homework."`,[`did`,`done`],1,`After "have," use "done." (Day 7)`],
+[`"She ran ___."`,[`good`,`well`],1,`How she ran → adverb "well." (Day 10)`],
+[`Which is a complete sentence?`,[`Because I was late.`,`I was late.`,`Late for school.`],1,`Subject + verb + complete thought. (Day 14)`],
+[`Which is correct?`,[`They're dog is cute.`,`There dog is cute.`,`Their dog is cute.`],2,`Belongs to them → their. (Day 19)`],
+[`Which is punctuated correctly?`,[`I bought apples, bananas, and grapes.`,`I bought apples bananas and grapes.`,`I bought, apples, bananas, and grapes.`],0,`Commas separate list items. (Day 17)`],
+[`What is a topic sentence?`,[`The sentence that tells the main idea of a paragraph`,`The last sentence of a story`,`A sentence with lots of adjectives`,`A question at the end`],0,`It is the "top bun."`],
+[`Which is a transition word?`,[`However`,`Purple`,`Elephant`,`Table`],0,`"However" connects ideas and shows contrast.`],
+[`In CUPS editing, what does the C stand for?`,[`Commas`,`Capitalization`,`Clauses`,`Characters`],1,`Capitalization, Usage, Punctuation, Spelling.`],
+[`Which is the best concluding sentence for a paragraph about why dogs make great pets?`,[`Dogs have four legs.`,`In conclusion, dogs are loyal, fun, and loving, which makes them wonderful pets.`,`My cat is orange.`,`What is your favorite animal?`],1,`It restates the main idea in new words.`]
+],
+fix:[
+[`me and him was going to they're house.`,[`He and I were going to their house.`],`Subject pronouns, "were" for plural, "their" for ownership, capital letter.`],
+[`yesterday, she dont want to eat no vegetables`,[`Yesterday, she didn't want to eat any vegetables.`,`Yesterday, she did not want to eat any vegetables.`],`Capital, past tense "didn't," apostrophe, no double negative, period.`],
+[`the dog wagged it's tail, it was happy.`,[`The dog wagged its tail because it was happy.`,`The dog wagged its tail. It was happy.`,`The dog wagged its tail; it was happy.`,`The dog wagged its tail, and it was happy.`,`The dog wagged its tail since it was happy.`],`Capital, "its," and fix the comma splice.`]
+],
+write:{p:`<b>🏆 Final writing assessment.</b> Write an <b>opinion paragraph of 9 to 12 sentences</b> answering: <i>"Should students have homework every night?"</i><br>Use the hamburger structure: a clear <b>topic sentence</b>, <b>3 reasons</b> each with an example or explanation, and a <b>concluding sentence</b>. Use at least <b>4 transition words</b> and a mix of sentence types. When you finish, edit it with CUPS.`,
+list:[`I have a clear topic sentence that states my opinion.`,`I gave 3 reasons, each with an example or explanation.`,`I used at least 4 transition words.`,`I have a concluding sentence in new words.`,`I used simple, compound, and complex sentences.`,`I edited with CUPS: Capitals, Usage, Punctuation, Spelling.`],min:130}
+}
+];
+
+/* ============================================================
+   APP
+   ============================================================ */
+const KEY='grammarQuest20_v1';
+let S=load();
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY));if(v&&v.days)return v;}catch(e){}return{name:'',days:{}};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function D(n){if(!S.days[n])S.days[n]={qa:[],qdone:false,fa:[],fr:[],fo:[],fdone:false,wt:'',wc:[]};return S.days[n];}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm=s=>String(s).replace(/[\u201C\u201D]/g,'"').replace(/[\u2018\u2019]/g,"'").replace(/\s+/g,' ').replace(/\s+([.,!?;:])/g,'$1').trim();
+const words=t=>{t=t.trim();return t?t.split(/\s+/).length:0;};
+let curTab='learn';
+
+function quizScore(n){const d=D(n),q=DAYS[n-1].quiz;if(!d.qdone)return null;let c=0;q.forEach((x,i)=>{if(d.qa[i]===x[2])c++;});return {c,t:q.length};}
+function fixScore(n){const d=D(n),f=DAYS[n-1].fix;if(!d.fdone)return null;let c=0;f.forEach((x,i)=>{if(d.fr[i]||d.fo[i])c++;});return {c,t:f.length};}
+function writeDone(n){const d=D(n),w=DAYS[n-1].write;return words(d.wt)>=w.min && w.list.every((_,i)=>d.wc[i]);}
+function dayPct(n){let p=0;const q=quizScore(n),f=fixScore(n);if(q)p+=40*q.c/q.t;if(f)p+=30*f.c/f.t;const d=D(n);if(writeDone(n))p+=30;else if(words(d.wt)>0)p+=Math.min(15,15*words(d.wt)/DAYS[n-1].write.min);return Math.round(p);}
+function dayStatus(n){const q=!!quizScore(n),f=!!fixScore(n),w=writeDone(n);if(q&&f&&w)return '⭐';if(q||f||w||words(D(n).wt))return '◐';return '';}
+
+function renderSide(active){
+  let h='';
+  const weeks=['Week 1 · Parts of speech','Week 2 · Verbs & describers','Week 3 · Sentences','Week 4 · Punctuation & writing'];
+  DAYS.forEach((d,i)=>{const n=i+1;if(i%5===0)h+=`<li class="weekhdr">${weeks[i/5]}</li>`;
+    h+=`<li><a href="#day-${n}" class="${active===n?'active':''}"><span class="num">${n}</span><span>${esc(d.t)}</span><span class="st">${dayStatus(n)}</span></a></li>`;});
+  document.getElementById('daylist').innerHTML=h;
+}
+
+function renderHome(){
+  const done=DAYS.filter((_,i)=>dayStatus(i+1)==='⭐').length;
+  const avg=Math.round(DAYS.reduce((a,_,i)=>a+dayPct(i+1),0)/20);
+  let cards='';
+  DAYS.forEach((d,i)=>{const n=i+1,q=quizScore(n),f=fixScore(n),w=writeDone(n);
+    cards+=`<a class="dcard" href="#day-${n}"><div class="n">Day ${n} ${dayStatus(n)}</div><div class="t">${esc(d.t)}</div><div class="bar"><i style="width:${dayPct(n)}%"></i></div>
+    <div class="chips"><span class="chip ${q?'on':''}">Quiz ${q?q.c+'/'+q.t:''}</span><span class="chip ${f?'on':''}">Fix-it ${f?f.c+'/'+f.t:''}</span><span class="chip ${w?'on':''}">Writing</span></div></a>`;});
+  document.getElementById('main').innerHTML=`
+  <div class="card hero"><span class="pill">Grade 6 · 20-day course</span>
+    <h1>Grammar Quest${S.name?', '+esc(S.name):''}! ✏️</h1>
+    <p>Twenty short lessons that take you from "What is a noun?" all the way to writing a strong, well-edited paragraph. Every day has a lesson, a grammar quiz, a "fix-it" editing challenge, and a writing task.</p>
+    <div class="row" style="margin-top:14px"><a class="btn orange" href="#day-${firstUnfinished()}">${done||avg?'Continue':'Start Day 1'} →</a><a class="btn ghost" href="#report" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3)">📊 Parent report</a></div>
+  </div>
+  <div class="card"><div class="row" style="justify-content:space-between">
+    <div><b>Student name</b><div class="row" style="margin-top:6px"><input type="text" id="nm" placeholder="Type your name" value="${esc(S.name)}"><button class="btn small" id="nmSave">Save</button></div></div>
+    <div class="row" style="gap:24px"><div><div class="muted" style="font-size:13px">Days completed</div><b style="font-size:26px;font-family:Fraunces">${done} / 20</b></div><div><div class="muted" style="font-size:13px">Overall progress</div><b style="font-size:26px;font-family:Fraunces">${avg}%</b></div></div>
+  </div></div>
+  <div class="card"><h2>How it works</h2>
+    <div class="cols">
+      <div class="ex"><b>📖 1. Learn</b><div>Read the lesson. Look at the ✔ and ✘ examples carefully.</div></div>
+      <div class="ex"><b>✅ 2. Quiz</b><div>Answer the questions, then check. Every answer has an explanation.</div></div>
+      <div class="ex"><b>🔧 3. Fix-it</b><div>Rewrite broken sentences correctly. This is real editing practice.</div></div>
+      <div class="ex"><b>✍️ 4. Write</b><div>Write your own paragraph, use the Writing Coach, and tick the checklist.</div></div>
+    </div>
+    <p class="muted" style="margin-bottom:0">🔓 Every day is open — you can do any day in any order, and redo any assessment as many times as you like. Progress is saved in this browser automatically. About 30–40 minutes per day.</p>
+  </div>
+  <h2>All 20 days</h2><div class="grid">${cards}</div>`;
+  document.getElementById('nmSave').onclick=()=>{S.name=document.getElementById('nm').value.trim();save();renderHome();};
+}
+function firstUnfinished(){for(let i=1;i<=20;i++)if(dayStatus(i)!=='⭐')return i;return 20;}
+
+function renderDay(n){
+  const d=DAYS[n-1],st=D(n);
+  const q=quizScore(n),f=fixScore(n),w=writeDone(n);
+  document.getElementById('main').innerHTML=`
+  <div class="dayhead"><div><span class="pill">Day ${n} of 20</span><h2 style="margin-top:8px">${esc(d.t)}</h2><p class="sub">${esc(d.s)}</p></div>
+  <div class="row"><a class="btn ghost small" href="#day-${Math.max(1,n-1)}" ${n===1?'style="visibility:hidden"':''}>← Day ${n-1}</a><a class="btn ghost small" href="#day-${Math.min(20,n+1)}" ${n===20?'style="visibility:hidden"':''}>Day ${n+1} →</a></div></div>
+  <div class="tabs" role="tablist">
+    <button data-t="learn">📖 Learn</button>
+    <button data-t="quiz">✅ Grammar Quiz${q?'<span class="dot"></span>':''}</button>
+    <button data-t="fix">🔧 Fix-it${f?'<span class="dot"></span>':''}</button>
+    <button data-t="write">✍️ Writing${w?'<span class="dot"></span>':''}</button>
+  </div>
+  <div id="tabbody"></div>`;
+  document.querySelectorAll('.tabs button').forEach(b=>{b.classList.toggle('on',b.dataset.t===curTab);b.onclick=()=>{curTab=b.dataset.t;renderDay(n);window.scrollTo({top:0});};});
+  const body=document.getElementById('tabbody');
+  if(curTab==='learn')renderLearn(n,body);
+  else if(curTab==='quiz')renderQuiz(n,body);
+  else if(curTab==='fix')renderFix(n,body);
+  else renderWrite(n,body);
+}
+function nextBtns(n,next,label){return `<div class="navbottom noprint"><span></span>${next?`<button class="btn" onclick="curTab='${next}';renderDay(${n});window.scrollTo({top:0})">${label} →</button>`:(n<20?`<a class="btn" href="#day-${n+1}">Go to Day ${n+1} →</a>`:`<a class="btn" href="#report">See my report →</a>`)}</div>`;}
+
+function renderLearn(n,el){el.innerHTML=`<div class="card lesson">${DAYS[n-1].lesson}</div>`+nextBtns(n,'quiz','Take the quiz');}
+
+function renderQuiz(n,el){
+  const st=D(n),Q=DAYS[n-1].quiz;
+  let h=`<div class="card"><p style="margin-top:0">Choose the best answer for each question. When you are done, press <b>Check my answers</b>.</p>`;
+  const sc=quizScore(n);
+  if(sc)h+=`<div class="score"><b>${sc.c}/${sc.t}</b><div>${sc.c===sc.t?'Perfect score! 🎉':sc.c/sc.t>=.75?'Great work! Read the explanations for any you missed.':'Good effort. Re-read the lesson and try again — you can retry as many times as you like.'}</div></div>`;
+  Q.forEach((x,i)=>{
+    h+=`<div class="q"><div class="qt"><span class="qn">${i+1}</span>${esc(x[0])}</div><div class="opts">`;
+    x[1].forEach((o,j)=>{let cls='';if(st.qdone){if(j===x[2])cls='right';else if(st.qa[i]===j)cls='wrong';}else if(st.qa[i]===j)cls='sel';
+      h+=`<button class="opt ${cls}" data-i="${i}" data-j="${j}" ${st.qdone?'disabled':''}>${esc(o)}</button>`;});
+    h+=`</div>`;
+    if(st.qdone){const ok=st.qa[i]===x[2];h+=`<div class="why ${ok?'good':'badx'}"><b>${ok?'✔ Correct.':'✘ Not quite.'}</b> ${esc(x[3])}</div>`;}
+    h+=`</div>`;});
+  h+=`<div class="row">${st.qdone?`<button class="btn orange" id="qRetry">↻ Try again</button>`:`<button class="btn" id="qCheck">Check my answers</button>`}<span class="muted" id="qMsg"></span></div></div>`;
+  el.innerHTML=h+(st.qdone?nextBtns(n,'fix','Go to Fix-it'):'');
+  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{st.qa[+b.dataset.i]=+b.dataset.j;save();renderQuiz(n,el);});
+  const c=document.getElementById('qCheck');
+  if(c)c.onclick=()=>{const miss=Q.filter((_,i)=>st.qa[i]===undefined||st.qa[i]===null).length;
+    if(miss&&!c.dataset.ok){document.getElementById('qMsg').textContent=`You skipped ${miss} question${miss>1?'s':''}. Press again to check anyway.`;c.dataset.ok=1;return;}
+    st.qdone=true;save();renderSide(n);renderDay(n);};
+  const r=document.getElementById('qRetry');
+  if(r)r.onclick=()=>{st.qdone=false;st.qa=[];save();renderSide(n);renderDay(n);};
+}
+
+function renderFix(n,el){
+  const st=D(n),F=DAYS[n-1].fix;
+  let h=`<div class="card"><p style="margin-top:0">Each sentence below has mistakes. <b>Rewrite the whole sentence correctly</b> in the box. Tip: press "Copy sentence" to start from the original and fix it.</p>`;
+  const sc=fixScore(n);
+  if(sc)h+=`<div class="score"><b>${sc.c}/${sc.t}</b><div>${sc.c===sc.t?'All fixed! Excellent editing. 🛠️':'Look at the model answers below to see what changed.'}</div></div>`;
+  F.forEach((x,i)=>{
+    h+=`<div class="fx"><div class="qt"><span class="qn">${i+1}</span>Fix this sentence:</div><div class="wrongs">${esc(x[0])}</div>
+    <textarea rows="2" data-i="${i}" ${st.fdone?'readonly':''} placeholder="Type the corrected sentence here...">${esc(st.fa[i]||'')}</textarea>
+    ${st.fdone?'':`<button class="btn ghost small" data-copy="${i}" style="margin-top:8px">Copy sentence</button>`}`;
+    if(st.fdone){
+      if(st.fr[i])h+=`<div class="res good"><b>✔ Correct!</b> ${esc(x[2])}</div>`;
+      else if(st.fo[i])h+=`<div class="res good"><b>✔ Marked correct.</b> Model answer: <b>${esc(x[1][0])}</b></div>`;
+      else h+=`<div class="res badx"><b>Compare with the model answer:</b><br>${x[1].map(a=>'✔ '+esc(a)).join('<br>')}<br><span class="muted">${esc(x[2])}</span><br><button class="btn ghost small" data-ov="${i}" style="margin-top:8px">My answer is also correct (parent/teacher check)</button></div>`;
+    }
+    h+=`</div>`;});
+  h+=`<div class="row">${st.fdone?`<button class="btn orange" id="fRetry">↻ Try again</button>`:`<button class="btn" id="fCheck">Check my sentences</button>`}</div></div>`;
+  el.innerHTML=h+(st.fdone?nextBtns(n,'write','Go to Writing'):'');
+  el.querySelectorAll('textarea').forEach(t=>t.oninput=()=>{st.fa[+t.dataset.i]=t.value;save();});
+  el.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{const i=+b.dataset.copy;let s=F[i][0].replace(/\s*\((many|one)[^)]*\)\s*$/,'').replace(/^(Combine|Fix the comma):\s*/,'');st.fa[i]=s;save();renderFix(n,el);const t=el.querySelector(`textarea[data-i="${i}"]`);t.focus();});
+  el.querySelectorAll('[data-ov]').forEach(b=>b.onclick=()=>{st.fo[+b.dataset.ov]=true;save();renderSide(n);renderDay(n);});
+  const c=document.getElementById('fCheck');
+  if(c)c.onclick=()=>{st.fr=F.map((x,i)=>x[1].some(a=>norm(a)===norm(st.fa[i]||'')));st.fo=[];st.fdone=true;save();renderSide(n);renderDay(n);};
+  const r=document.getElementById('fRetry');
+  if(r)r.onclick=()=>{st.fdone=false;st.fr=[];st.fo=[];save();renderSide(n);renderDay(n);};
+}
+
+function lint(t){
+  const out=[];if(!t.trim())return out;
+  if(/(^|[\s"(])i(?=[\s,.!?;:']|$)/.test(t))out.push(`Capitalize "I" when it is a word by itself. (Day 16)`);
+  const sents=(t.match(/[^.!?]+[.!?]*["']?/g)||[]).map(s=>s.trim()).filter(Boolean);
+  const low=sents.filter(s=>/^["']?[a-z]/.test(s));
+  if(low.length)out.push(`${low.length} sentence${low.length>1?'s start':' starts'} with a small letter: "${esc(low[0].slice(0,40))}..." (Day 13)`);
+  if(!/[.!?]["']?\s*$/.test(t.trim()))out.push(`End your last sentence with . ! or ? (Day 13)`);
+  const longS=sents.filter(s=>words(s)>32);
+  if(longS.length)out.push(`One sentence is very long (${words(longS[0])} words). Could it be a run-on? Try splitting it. (Day 14)`);
+  const m=t.match(/\b(should|could|would|must|might) of\b/i);if(m)out.push(`Write "${m[1]} have," not "${m[1]} of." (Day 5)`);
+  if(/\balot\b/i.test(t))out.push(`"A lot" is two words. (Day 19)`);
+  if(/\b(hisself|theirselves|theirself|ourself)\b/i.test(t))out.push(`Use "himself" / "themselves" / "ourselves." (Day 4)`);
+  if(/\b(me|him|her|us|them) and \w+ (went|are|were|was|go|played|like|love|did|have|had|will)\b/i.test(t)||/\bme and \w+\b/i.test(t.split(/[.!?]/).map(s=>s.trim().slice(0,12)).join('|')))out.push(`Check your subject pronouns: use "___ and I" (not "me and ___") as a subject. (Day 3)`);
+  const rep=t.match(/\b(\w+)\s+\1\b/i);if(rep&&!/^(had|that)$/i.test(rep[1]))out.push(`Repeated word: "${esc(rep[0])}". (Proofreading)`);
+  const ca=t.match(/\b(dont|cant|wont|didnt|isnt|doesnt|wasnt|arent|couldnt|shouldnt|wouldnt|im|ive|youre|theyre|thats|whats|lets)\b/i);if(ca)out.push(`"${esc(ca[0])}" needs an apostrophe. (Day 18)`);
+  if(/\s[,.!?]/.test(t))out.push(`Remove the space before a comma or period.`);
+  if(/\b(they|we|you) was\b/i.test(t))out.push(`Use "were" with they/we/you. (Day 8)`);
+  if(/\b(he|she|it) don't\b/i.test(t))out.push(`Use "doesn't" with he/she/it. (Day 8)`);
+  if(/\bthen (me|him|her|them|us|I|you|my|his|their|before|ever)\b/i.test(t))out.push(`For comparisons use "than," not "then." (Day 19)`);
+  if(/\b(your|its) (welcome|the|a|going|so|very|not|really)\b/i.test(t))out.push(`Check "your/you're" and "its/it's" — read it as "you are" / "it is." (Day 19)`);
+  if(/\b(there|their) (is|are|was|were) going\b/i.test(t)||/\b(there|their) going\b/i.test(t))out.push(`"They are going" = they're. (Day 19)`);
+  if(/\b(have|has|had) (went|saw|ate|did|wrote|took|ran|swam|began|broke|chose|drank|gave|knew)\b/i.test(t))out.push(`After have/has/had, use the past participle (gone, seen, eaten, done, written...). (Day 7)`);
+  if(/\b(brung|bringed|seen it yesterday)\b/i.test(t))out.push(`Use "brought." (Day 7)`);
+  if(/\b(don't|didn't|doesn't|won't|can't|never) (have |want |got |see |know )?(no|nothing|nobody|none)\b/i.test(t))out.push(`Double negative? Use only one negative word. (Day 10)`);
+  if(/\b(more|most) \w+(er|est)\b/i.test(t))out.push(`Don't use "more/most" with -er/-est. (Day 9)`);
+  return out;
+}
+
+function renderWrite(n,el){
+  const st=D(n),W=DAYS[n-1].write,wc=words(st.wt);
+  let h=`<div class="card"><div class="prompt"><b>✍️ Your writing task</b><div style="margin-top:6px">${W.p}</div></div>
+  <textarea id="wt" rows="12" placeholder="Start writing here. Your work saves automatically.">${esc(st.wt)}</textarea>
+  <div class="row" style="justify-content:space-between;margin-top:8px"><span class="wc" id="wcount">${wc} words (goal: at least ${W.min})</span>
+  <button class="btn small" id="coachBtn">🤖 Writing Coach: check my writing</button></div>
+  <div id="coach" class="coach"></div>
+  <h3>Self-check before you finish</h3><p class="muted" style="margin-top:-6px">Read your writing out loud, then tick each box only when it is true.</p><div class="checks">`;
+  W.list.forEach((c,i)=>{h+=`<label><input type="checkbox" data-c="${i}" ${st.wc[i]?'checked':''}><span>${esc(c)}</span></label>`;});
+  h+=`</div><div id="wstat"></div><div class="row noprint" style="margin-top:10px"><button class="btn ghost small" id="wPrint">🖨️ Print this writing</button><button class="btn ghost small" id="wClear">Clear and start over</button></div></div>`;
+  el.innerHTML=h+nextBtns(n,null);
+  const ta=document.getElementById('wt');
+  const stat=()=>{const w=words(st.wt),ok=writeDone(n);document.getElementById('wcount').textContent=`${w} words (goal: at least ${W.min})`;
+    document.getElementById('wstat').innerHTML=ok?`<div class="res good"><b>⭐ Writing task complete!</b> Show it to a parent or teacher for feedback.</div>`:(w>=W.min?`<div class="res badx">Great length! Now finish your self-check list.</div>`:'');renderSide(n);};
+  ta.oninput=()=>{st.wt=ta.value;save();stat();};
+  el.querySelectorAll('[data-c]').forEach(c=>c.onchange=()=>{st.wc[+c.dataset.c]=c.checked;save();stat();});
+  document.getElementById('coachBtn').onclick=()=>{const L=lint(st.wt),w=words(st.wt),box=document.getElementById('coach');
+    if(!w){box.innerHTML=`<div class="res badx">Write something first, then ask the coach.</div>`;return;}
+    let msg=L.length?`<div class="res badx"><b>The coach noticed ${L.length} thing${L.length>1?'s':''} to check:</b><ul>${L.map(x=>'<li>'+x+'</li>').join('')}</ul><span class="muted">The coach is a helper, not a teacher — it can miss things and can sometimes be wrong. Always re-read your work yourself.</span></div>`
+      :`<div class="res good"><b>✔ The coach didn't find common mistakes.</b> Nice! Now re-read it out loud and use the checklist — the coach can't check everything.</div>`;
+    if(w<W.min)msg+=`<div class="res badx">Keep going: you need about ${W.min-w} more words.</div>`;
+    box.innerHTML=msg;};
+  document.getElementById('wPrint').onclick=()=>{const wdw=window.open('','_blank');if(!wdw)return;wdw.document.write(`<html><head><title>Day ${n} writing</title><style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;line-height:1.8;font-size:17px}h2{font-family:sans-serif}</style></head><body><h2>Day ${n}: ${esc(DAYS[n-1].t)}</h2><p><b>${esc(S.name||'Student')}</b> · ${new Date().toLocaleDateString()}</p><hr><p>${esc(st.wt).replace(/\n/g,'<br>')}</p><hr><p style="color:#777">Teacher/parent comments:</p><div style="height:160px;border:1px solid #ccc"></div></body></html>`);wdw.document.close();wdw.print();};
+  document.getElementById('wClear').onclick=()=>{if(confirm('Erase this writing and the checklist?')){st.wt='';st.wc=[];save();renderWrite(n,el);renderSide(n);}};
+  stat();
+}
+
+function renderReport(){
+  let rows='',tq=0,tqt=0,tf=0,tft=0,tw=0;
+  DAYS.forEach((d,i)=>{const n=i+1,q=quizScore(n),f=fixScore(n),w=writeDone(n),wc=words(D(n).wt);
+    if(q){tq+=q.c;tqt+=q.t;}if(f){tf+=f.c;tft+=f.t;}if(w)tw++;
+    rows+=`<tr><td>${n}</td><td><a href="#day-${n}">${esc(d.t)}</a></td><td>${q?q.c+'/'+q.t:'—'}</td><td>${f?f.c+'/'+f.t:'—'}</td><td>${w?'✔ '+wc+' words':(wc?wc+' words (in progress)':'—')}</td></tr>`;});
+  const weak=DAYS.map((d,i)=>({d,q:quizScore(i+1),n:i+1})).filter(x=>x.q&&x.q.c/x.q.t<.75);
+  document.getElementById('main').innerHTML=`
+  <div class="card"><h2>📊 Progress report${S.name?' — '+esc(S.name):''}</h2>
+  <div class="row" style="gap:28px;margin:6px 0 14px">
+    <div><div class="muted" style="font-size:13px">Grammar quizzes</div><b style="font-size:24px;font-family:Fraunces">${tqt?Math.round(100*tq/tqt)+'%':'—'}</b></div>
+    <div><div class="muted" style="font-size:13px">Fix-it editing</div><b style="font-size:24px;font-family:Fraunces">${tft?Math.round(100*tf/tft)+'%':'—'}</b></div>
+    <div><div class="muted" style="font-size:13px">Writing tasks done</div><b style="font-size:24px;font-family:Fraunces">${tw} / 20</b></div>
+  </div>
+  ${weak.length?`<div class="warn"><b>Topics to review</b> (quiz score below 75%): ${weak.map(x=>`<a href="#day-${x.n}">Day ${x.n} ${esc(x.d.t)}</a>`).join(', ')}</div>`:''}
+  <div class="tablewrap"><table class="report"><tr><th>Day</th><th>Topic</th><th>Quiz</th><th>Fix-it</th><th>Writing</th></tr>${rows}</table></div>
+  <div class="row noprint" style="margin-top:16px"><button class="btn" onclick="window.print()">🖨️ Print report</button><button class="btn ghost" id="exp">⬇️ Save progress file</button><label class="btn ghost" style="cursor:pointer">⬆️ Load progress file<input type="file" id="imp" accept=".json,application/json" hidden></label><button class="btn ghost" id="rst">Reset everything</button></div>
+  <p class="muted noprint" style="font-size:14px">Progress is saved in this browser only. To move to another computer or tablet, use "Save progress file" here and "Load progress file" there.</p>
+  </div>
+  <div class="card"><h2>All writing</h2>${DAYS.map((d,i)=>D(i+1).wt.trim()?`<h3>Day ${i+1}: ${esc(d.t)}</h3><p style="white-space:pre-wrap;background:var(--bg);padding:12px;border-radius:10px">${esc(D(i+1).wt)}</p>`:'').join('')||'<p class="muted">No writing yet.</p>'}</div>`;
+  document.getElementById('exp').onclick=()=>{const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`grammar-quest-${(S.name||'progress').replace(/\W+/g,'-')}.json`;a.click();};
+  document.getElementById('imp').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const v=JSON.parse(r.result);if(v&&v.days){S=v;save();renderSide(0);renderReport();alert('Progress loaded!');}else alert('That file does not look right.');}catch(x){alert('Could not read that file.');}};r.readAsText(f);};
+  document.getElementById('rst').onclick=()=>{if(confirm('This erases ALL answers and writing for all 20 days. Are you sure?')){S={name:S.name,days:{}};save();renderSide(0);renderReport();}};
+}
+
+let CUR='';
+function curHash(){try{return location.hash||CUR;}catch(e){return CUR;}}
+function go(h){CUR=h;try{history.pushState(null,'',h);}catch(e){}route(h);}
+/* Handle all in-page links ourselves so navigation works everywhere:
+   GitHub Pages, a local file, or an embedded preview. */
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;e.preventDefault();go(a.getAttribute('href'));});
+function route(force){
+  const h=(typeof force==='string'?force:curHash())||'#home';const m=h.match(/^#day-(\d+)/);
+  closeMenu();
+  if(m){const n=Math.min(20,Math.max(1,+m[1]));if(route.last!==n)curTab='learn';route.last=n;renderSide(n);renderDay(n);}
+  else if(h==='#report'){route.last=0;renderSide(0);renderReport();}
+  else{route.last=0;renderSide(0);renderHome();}
+  window.scrollTo({top:0});
+}
+function closeMenu(){document.getElementById('side').classList.remove('open');document.getElementById('scrim').className='';}
+document.getElementById('menuBtn').onclick=()=>{document.getElementById('side').classList.add('open');document.getElementById('scrim').className='scrim';};
+document.getElementById('scrim').onclick=closeMenu;
+document.getElementById('themeBtn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';try{localStorage.setItem(KEY+'_theme',r.dataset.theme);}catch(e){}};
+try{const t=localStorage.getItem(KEY+'_theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}
+window.addEventListener('hashchange',()=>{CUR=location.hash;route();});
+window.addEventListener('popstate',()=>{CUR=location.hash;route();});
+route();
+</script>
+</body>
+</html>
